@@ -22,6 +22,7 @@
 #define __DYNLIB_MANAGER_H__
 
 #include <map>
+#include "prerequisites.h"
 #include "constants.h"
 #include "dynlib.h"
 #include "singleton.h"

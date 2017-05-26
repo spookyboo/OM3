@@ -21,6 +21,7 @@
 #ifndef _DYNLIB_H__
 #define _DYNLIB_H__
 
+#include "prerequisites.h"
 #include "constants.h"
 #include "plugin_interface.h"
 #include <string>

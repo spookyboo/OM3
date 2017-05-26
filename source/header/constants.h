@@ -23,20 +23,6 @@
 
 #include <QString>
 
-//----------------------------------------------------------------------------
-#if WIN32 || WIN64
-    #ifdef OGAM_IMPORT_EXPORT_PLUGIN_EXPORTS
-        #define _OgamExport __declspec( dllexport )
-    #else
-        #if defined( __MINGW32__ )
-            #define _OgamExport
-        #else
-            #define _OgamExport __declspec(dllimport)
-        #endif
-    #endif
-#endif
-
-
 //************************************ Icons *******************************************/
 static const QString ICON_PATH = QString("../common/icons/");
 static const QString ICON_CATEGORY_DEFAULT = QString("category_default.png");

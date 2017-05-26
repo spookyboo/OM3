@@ -22,6 +22,7 @@
 #define ICONS_DIALOG_H
 
 #include <QDialog>
+#include "prerequisites.h"
 #include "constants.h"
 #include "tool_default_texturewidget.h"
 

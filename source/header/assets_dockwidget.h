@@ -21,6 +21,7 @@
 #ifndef AssetsDOCWIDGET_H
 #define AssetsDOCWIDGET_H
 
+#include "prerequisites.h"
 #include "constants.h"
 #include <QtWidgets>
 #include <QMenu>

@@ -22,8 +22,8 @@
 #define __OGAMPLUGIN_H__
 
 #include <string>
-#include "constants.h"
-#include "assets_dockwidget.h"
+#include "prerequisites.h"
+//#include "assets_dockwidget.h"
 
 //----------------------------------------------------------------------------
 class _OgamExport PluginInterface

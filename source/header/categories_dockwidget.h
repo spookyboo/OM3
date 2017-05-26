@@ -21,6 +21,7 @@
 #ifndef CategoriesDOCWIDGET_H
 #define CategoriesDOCWIDGET_H
 
+#include "prerequisites.h"
 #include "constants.h"
 #include <QtWidgets>
 #include <QMenu>

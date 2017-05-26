@@ -30,6 +30,7 @@
 #include <QLabel>
 #include <QMap>
 #include "magus_treewidget.h"
+#include "prerequisites.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -85,10 +86,11 @@ namespace Magus
 
     IMPORTANT:
     =========
-    This class is changed to facilitate the HLMS editor. Do not use it as a
-    generic Magus class.
+    This class is changed to facilitate Ogam (e.g. added _OgamExport to make it available in
+    plugins without duplicate code and name clashes).
+    Do not use it as a generic Magus class.
     ***************************************************************************/
-    class QtResourceTreeWidget : public QWidget
+    class _OgamExport QtResourceTreeWidget : public QWidget
     {
         Q_OBJECT
 
