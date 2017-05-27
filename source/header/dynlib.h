@@ -23,7 +23,7 @@
 
 #include "prerequisites.h"
 #include "constants.h"
-#include "plugin_interface.h"
+#include "plugin_resource_interface.h"
 #include <string>
 
 #if WIN32 || WIN64

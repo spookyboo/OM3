@@ -18,19 +18,36 @@
 **
 ****************************************************************************/
 
-#ifndef __OGAMPLUGIN_H__
-#define __OGAMPLUGIN_H__
+#ifndef __OGAM_PLUGIN_INTERFACE_H__
+#define __OGAM_PLUGIN_INTERFACE_H__
 
 #include <string>
+#include <vector>
 #include "prerequisites.h"
-//#include "assets_dockwidget.h"
 
-//----------------------------------------------------------------------------
+/****************************************************************************
+ Structure of the meta data used by the plugins
+ ***************************************************************************/
+struct _OgamExport AssetMetaData
+{
+    double assetId;                                 // Identification of the asset
+    std::string fullQualifiedFileNameOrReference;   // Refers to a location of the asset
+    std::vector<std::string> tags;                  // An asset may contain [0..n] tags; used for searching
+};
+
+/****************************************************************************
+ Defines the interface of a plugin.
+ ***************************************************************************/
 class _OgamExport PluginInterface
 {
     public:
         PluginInterface() {}
         virtual ~PluginInterface() {}
+
+        /** Get the type of the plugin.
+        @remarks Ogam is capable of loading libraries with different plugin types
+        */
+        virtual const std::string& getType (void) const = 0;
 
         /** Get the name of the plugin. 
         @remarks An implementation must be supplied for this method to uniquely
@@ -38,7 +55,7 @@ class _OgamExport PluginInterface
         */
         virtual const std::string& getName (void) const = 0;
 
-        /** Perform the plugin initial installation sequence. 
+        /** Perform the plugin initial installation sequence.
         @remarks An implementation must be supplied for this method. It must perform
         the startup tasks necessary to install any rendersystem customisations 
         or anything else that is not dependent on system initialisation, ie

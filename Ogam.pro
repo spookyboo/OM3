@@ -15,8 +15,9 @@ HEADERS       = \
     source/header/dynlib.h \
     source/header/dynlib_manager.h \
     source/header/singleton.h \
-    source/header/plugin_interface.h \
-    source/header/prerequisites.h
+    source/header/prerequisites.h \
+    source/header/plugin_resource_interface.h \
+    source/header/plugin_interface.h
 
 
 SOURCES       = \
