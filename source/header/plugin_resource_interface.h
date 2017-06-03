@@ -36,6 +36,10 @@ class _OgamExport PluginResourceInterface : public PluginInterface
         /** @see PluginInterface
         */
         virtual const std::string& getType (void) const {return "plugin_resource_type";}
-    };
+
+        /** Pass the information of a resource from the plugin to the main Ogam application
+        */
+        virtual void addResource (const AssetMetaData& assetMetaData) = 0;
+};
 
 #endif

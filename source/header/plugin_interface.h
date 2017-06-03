@@ -30,6 +30,7 @@
  ***************************************************************************/
 struct _OgamExport AssetMetaData
 {
+    std::string origin;                             // Identification of the resource plugin
     double assetId;                                 // Identification of the asset
     std::string fullQualifiedFileNameOrReference;   // Refers to a location of the asset
     std::vector<std::string> tags;                  // An asset may contain [0..n] tags; used for searching
@@ -95,6 +96,11 @@ class _OgamExport PluginInterface
         should have been sorted out in the 'shutdown' method.
         */
         virtual void uninstall (void) = 0;
+
+        /** If the plugin has widgets and the resetWindowLayout function is called,
+         the plugin should arrange its widgets to the default state.
+         */
+        virtual void resetWindowLayout (void) = 0;
     };
 
 #endif

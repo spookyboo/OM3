@@ -11,14 +11,14 @@ HEADERS       = \
     source/header/magus_treewidget.h \
     source/header/constants.h \
     source/header/icons_dialog.h \
-    source/header/tool_default_texturewidget.h \
     source/header/dynlib.h \
     source/header/dynlib_manager.h \
     source/header/singleton.h \
     source/header/prerequisites.h \
     source/header/plugin_resource_interface.h \
-    source/header/plugin_interface.h
-
+    source/header/plugin_interface.h \
+    source/header/media_listwidget.h \
+    source/header/tool_default_texturewidget.h
 
 SOURCES       = \
     source/src/main.cpp \
@@ -28,15 +28,12 @@ SOURCES       = \
     source/src/tool_resourcetree_widget.cpp \
     source/src/magus_treewidget.cpp \
     source/src/icons_dialog.cpp \
-    source/src/tool_default_texturewidget.cpp \
     source/src/dynlib.cpp \
-    source/src/dynlib_manager.cpp
-
+    source/src/dynlib_manager.cpp \
+    source/src/media_listwidget.cpp \
+    source/src/tool_default_texturewidget.cpp
 
 INCLUDEPATH += "../Ogam/source/header/"
-
-
-
 
 Release:DESTDIR = ../Ogam/bin
 Debug:DESTDIR = ../Ogam/bin

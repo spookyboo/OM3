@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QTabWidget>
+#include "media_listwidget.h"
 
 QT_BEGIN_NAMESPACE
 class QDockWidget;
@@ -48,10 +49,14 @@ class _OgamExport AssetsDockWidget : public QDockWidget
 		AssetsDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
 		~AssetsDockWidget(void);
 
-        // Add a widget
+        /* Add a new tab to the AssetsDockWidget and set the widget, passed as an
+         * argument, in the tab.
+         */
         void addWidget (QWidget* widget,
                         QString fullQualifiedIconName,
                         QString tabName);
+
+        MediaListWidget* createMediaListWidget(void);
 
 	private slots:
         void tabSelected(int index);

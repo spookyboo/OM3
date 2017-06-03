@@ -43,6 +43,7 @@ class _OgamExport MainWindow : public QMainWindow
 	Q_OBJECT
 
 	public:
+        typedef QVector<PluginInterface*> PluginVector;
 		MainWindow(void);
 		~MainWindow(void);
 		void update(void);
@@ -77,6 +78,7 @@ class _OgamExport MainWindow : public QMainWindow
         AssetsDockWidget* mAssetsDockWidget;
         DynLibManager* mDynLibManager;
         DynLib* mFileResourceLibrary;
+        PluginVector mPluginVector;
 };
 
 #endif

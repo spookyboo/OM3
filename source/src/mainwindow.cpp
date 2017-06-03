@@ -45,8 +45,9 @@ MainWindow::MainWindow(void) : mIsClosing(false)
     mDynLibManager = new DynLibManager();
     mFileResourceLibrary = DynLibManager::getSingleton().load("OgamFileResourcePlugin"); // Loads the 'OgamFileResourcePlugin' library
     PLUGIN_CREATE pFunc = reinterpret_cast<PLUGIN_CREATE>(mFileResourceLibrary->getSymbol("createPlugin")); // Reference to the function in the library that creates the plugin
-    PluginInterface* plugin = pFunc(mAssetsDockWidget); // Create the plugin in the library; TODO: Store the pointer to the plugin somewhere for later use
+    PluginInterface* plugin = pFunc(mAssetsDockWidget); // Create the plugin in the library
     plugin->install(); // Install adds a new tab to the mAssetsDockWidget (in case of the 'OgamFileResourcePlugin' library at least)
+    mPluginVector.append(plugin);
 
     // Set the title
     setWindowTitle(QString("Open Game Asset Manager"));
@@ -62,6 +63,8 @@ MainWindow::MainWindow(void) : mIsClosing(false)
 //****************************************************************************/
 MainWindow::~MainWindow(void)
 {
+    // TODO: uninstall the plugins
+
     PLUGIN_DELETE pFunc = reinterpret_cast<PLUGIN_DELETE>(mFileResourceLibrary->getSymbol("deletePlugin"));
     pFunc(); // Deletes the plugin instance in the library
     DynLibManager::getSingleton().unload(mFileResourceLibrary); // Unloads the library
@@ -158,6 +161,12 @@ void MainWindow::doResetWindowLayoutMenuAction(void)
     addDockWidget(Qt::LeftDockWidgetArea, mCategoriesDockWidget);
     mAssetsDockWidget->show();
     setCentralWidget(mAssetsDockWidget);
+
+    // Delegate also to the plugins
+    foreach (PluginInterface* plugin, mPluginVector)
+    {
+        plugin->resetWindowLayout();
+    }
 }
 
 

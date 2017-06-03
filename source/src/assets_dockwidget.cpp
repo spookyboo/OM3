@@ -67,3 +67,8 @@ void AssetsDockWidget::tabSelected(int index)
     //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
     //QMessageBox::information(this, QString("QTabWidget"), message);
 }
+
+MediaListWidget* AssetsDockWidget::createMediaListWidget(void)
+{
+    return new MediaListWidget();
+}
