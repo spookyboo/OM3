@@ -22,22 +22,40 @@
 #define MEDIA_LISTWIDGET_H
 
 #include <QListWidget>
+#include <QMap>
 #include "plugin_interface.h"
 
 /****************************************************************************
 Main class that contains Media widgets. It is typically used to show a list
 of media files. It is used to show which media files are part of the workbench
 ***************************************************************************/
+class QListWidgetItem;
 class MediaListWidget : public QListWidget
 {
     public:
+        typedef QMap<QListWidgetItem*, AssetMetaData> AssetMap;
+
         MediaListWidget (QWidget* parent = 0);
         virtual ~MediaListWidget (void);
 
-        /* Add a resource to this list. Based on its characteristics, the media type is determined
+        /** Add a resource to this list. Based on its characteristics, the media type is determined
          * and the correct widget is created, which is added to the list
          */
         void addResource (const AssetMetaData& assetMetaData);
+
+        /** Remove a specific resource, identified by assetId
+         */
+        void removeResourceByAssetId (double assetId);
+
+        /** Remove one or more resource, identified by path
+         */
+        void removeResourcesByPath (const QString& path);
+
+        /** Remove one or more resource, identified by origin and path
+        @remarks The difference between the previous function is that multiple plugins
+        may have the same path, so more resources are unintendedly removed
+        */
+        void removeResourcesByOriginAndPath (const QString& origin, const QString& path);
 
     signals:
         // Emitted when an asset is added
@@ -47,10 +65,14 @@ class MediaListWidget : public QListWidget
         void resourceDeleted (const AssetMetaData& assetMetaData);
 
     protected:
+        void deleteItem(QListWidgetItem* item);
         //virtual void keyPressEvent(QKeyEvent* event);
         //virtual void dropEvent(QDropEvent* event);
         //virtual void dragEnterEvent(QDragEnterEvent *event);
         //virtual void dragMoveEvent(QDragMoveEvent *event);
+
+    private:
+        AssetMap mAssetMap;
 };
 
 #endif

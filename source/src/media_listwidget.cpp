@@ -51,7 +51,9 @@ MediaListWidget::~MediaListWidget(void)
 //****************************************************************************/
 void MediaListWidget::addResource (const AssetMetaData& assetMetaData)
 {
-    // TODO: create a widget and add it to the list
+    /* TODO: Determine the media type. This is needed to determine which 'media widget plugin'
+     * is needed. The specific 'media widget plugin' creates the widget
+     */
 
     // TEST
     QListWidgetItem* item = new QListWidgetItem(this);
@@ -70,6 +72,55 @@ void MediaListWidget::addResource (const AssetMetaData& assetMetaData)
     addItem(item);
     setItemWidget(item, widget);
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    mAssetMap[item] = assetMetaData;
     //widget->show();
     // TEST
+}
+
+//****************************************************************************/
+void MediaListWidget::removeResourceByAssetId (double assetId)
+{
+    // TODO
+}
+
+//****************************************************************************/
+void MediaListWidget::removeResourcesByPath (const QString& path)
+{
+    // TODO
+}
+
+//****************************************************************************/
+void MediaListWidget::removeResourcesByOriginAndPath (const QString& origin, const QString& path)
+{
+    QListWidgetItem* item;
+    AssetMetaData assetMetaData;
+    AssetMap::iterator it = mAssetMap.begin();
+    AssetMap::iterator itEnd = mAssetMap.end();
+    std::string stdOrigin = origin.toStdString();
+    std::string stdPath = path.toStdString();
+    while (it != itEnd)
+    {
+        item = it.key();
+        assetMetaData = it.value();
+        if (assetMetaData.origin == stdOrigin && assetMetaData.path == stdPath)
+        {
+            it = mAssetMap.erase(it);
+            deleteItem(item);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
+//****************************************************************************/
+void MediaListWidget::deleteItem(QListWidgetItem* item)
+{
+    QWidget* widget = itemWidget(item);
+    int r = row(item);
+    removeItemWidget(item);
+    takeItem(r);
+    delete widget;
+    delete item;
 }

@@ -30,8 +30,10 @@
  ***************************************************************************/
 struct _OgamExport AssetMetaData
 {
-    std::string origin;                             // Identification of the resource plugin
+    std::string origin;                             // Identification of the resource plugin (key)
     double assetId;                                 // Identification of the asset
+    std::string path;                               // Contains the path of the asset
+    std::string baseNameOrReference;                // Contains the (file) name of the asset
     std::string fullQualifiedFileNameOrReference;   // Refers to a location of the asset
     std::vector<std::string> tags;                  // An asset may contain [0..n] tags; used for searching
 };

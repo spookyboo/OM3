@@ -18,7 +18,8 @@ HEADERS       = \
     source/header/plugin_resource_interface.h \
     source/header/plugin_interface.h \
     source/header/media_listwidget.h \
-    source/header/tool_default_texturewidget.h
+    source/header/tool_default_texturewidget.h \
+    source/header/plugin_media_widget_interface.h
 
 SOURCES       = \
     source/src/main.cpp \
