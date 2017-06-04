@@ -66,6 +66,36 @@ void DynLibManager::unload (DynLib* lib)
 }
 
 //-----------------------------------------------------------------------
+void DynLibManager::unload (const std::string& filename)
+{
+    DynLibList::iterator i = mLibList.find(filename);
+    DynLib* lib = 0;
+    if (i != mLibList.end())
+    {
+        lib = i->second;
+        mLibList.erase(i);
+    }
+
+    if (lib)
+    {
+        lib->unload();
+        delete lib;
+    }
+}
+
+//-----------------------------------------------------------------------
+DynLib* DynLibManager::getDynLib (const std::string& filename)
+{
+    DynLib* lib = 0;
+    DynLibList::iterator i = mLibList.find(filename);
+    if (i != mLibList.end())
+    {
+        lib = i->second;
+    }
+    return lib;
+}
+
+//-----------------------------------------------------------------------
 DynLibManager::~DynLibManager()
 {
     // Unload & delete resources in turn

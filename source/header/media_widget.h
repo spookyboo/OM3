@@ -16,32 +16,31 @@
 **
 ****************************************************************************/
 
-#ifndef __OGAM_RESOURCE_PLUGIN_H__
-#define __OGAM_RESOURCE_PLUGIN_H__
+#ifndef MEDIA_WIDGET_H
+#define MEDIA_WIDGET_H
 
+#include <QWidget>
 #include "plugin_interface.h"
 
 /****************************************************************************
- Defines the interface of a resource plugin. Resources are file system, subversion
- git, database, etc.
- ***************************************************************************/
-class MediaWidget;
-class _OgamExport PluginResourceInterface : public PluginInterface
+A Media widgets is used to show a media file as a widget (e.g. in the workbench
+***************************************************************************/
+class MediaWidget : public QWidget
 {
     public:
-        PluginResourceInterface (void) {}
-        virtual ~PluginResourceInterface (void) {}
+        MediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0)
+        {
+            mAssetMetaData = assetMetaData;
+        }
+        virtual ~MediaWidget (void) {}
 
-        /** @see PluginInterface
-        */
-        virtual const std::string& getType (void) const {return PLUGIN_TYPE_RESOURCE;}
+        /**
+          Returns the information of this media widget
+          */
+        const AssetMetaData& getAssetMetaData (void) const {return mAssetMetaData;}
 
-        /** Pass the information of a resource from the plugin to the main Ogam application
-        As a result, a pointer to a created MediaWidget is returned, which should be used by
-        the plugin.
-        @remarks If not used, just destroy the widget.
-        */
-        virtual MediaWidget* addResource (const AssetMetaData& assetMetaData) = 0;
+    private:
+        AssetMetaData mAssetMetaData;
 };
 
 #endif

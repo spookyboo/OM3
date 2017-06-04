@@ -28,15 +28,29 @@
  specific plugin. This makes it possible to create a widget for very custom
  media files.
  ***************************************************************************/
+class MediaWidget;
 class _OgamExport PluginMediaWidgetInterface : public PluginInterface
 {
     public:
+        typedef std::vector<std::string> SupportedExtensions;
+
         PluginMediaWidgetInterface (void) {}
         virtual ~PluginMediaWidgetInterface (void) {}
 
         /** @see PluginInterface
         */
-        virtual const std::string& getType (void) const {return "plugin_media_widget_type";}
+        virtual const std::string& getType (void) const {return PLUGIN_TYPE_MEDIA_WIDGET;}
+
+        /** Creates a MediaWidget, based on the info of AssetMetaData.
+         * @remarks Note, that only a MediaWidget is created when the
+         * extension of the asset is supported.
+        */
+        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData) = 0;
+
+        /** Returns the supported extensions. This information is used by Ogam and
+         * Ogam plugins to determine which plugin is needed to display a certain asset.
+        */
+        virtual const SupportedExtensions& getSupportedExtensions (void) const = 0;
 };
 
 #endif

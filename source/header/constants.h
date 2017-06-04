@@ -33,4 +33,9 @@ static const QString CONTEXT_MENU_ACTION_ADD_CATEGORY = QString("Add category");
 static const QString CONTEXT_MENU_ACTION_REMOVE_CATEGORY = QString("Remove category");
 static const QString CONTEXT_MENU_ACTION_SET_ICON = QString("Set icon");
 
+//************************************ Misc *******************************************/
+static const QString OGAM_PLUGINS_CONFIG = QString("plugins.cfg");
+static const QString PLUGINS_CONFIG_PROPERTY_NUMBER_OF_PLUGINS = QString("numberOfPlugins");
+static const QString PLUGINS_CONFIG_PROPERTY_PLUGINS_PREFIX = QString("plugin_");
+
 #endif

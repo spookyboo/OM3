@@ -28,36 +28,35 @@ Main class that contains Media widgets. It is typically used to show a list
 of media files. It is used to show which media files are part of the workbench
 ***************************************************************************/
 class QListWidgetItem;
+class MediaWidget;
 class MediaListWidget : public QListWidget
 {
     public:
         typedef QMap<QListWidgetItem*, AssetMetaData> AssetMap;
-
         MediaListWidget (QWidget* parent = 0);
         virtual ~MediaListWidget (void);
 
-        /** Add a resource to this list. Based on its characteristics, the media type is determined
-         * and the correct widget is created, which is added to the list
+        /** Add a Media Widget to this list.
          */
-        void addResource (const AssetMetaData& assetMetaData);
+        void addMediaWidget (MediaWidget* mediaWidget);
 
-        /** Remove a specific resource, identified by assetId
+        /** Remove a specific MediaWidget, identified by assetId
          */
-        void removeResourceByAssetId (double assetId);
+        void removeMediaWidgetByAssetId (double assetId);
 
-        /** Remove one or more resource, identified by topLevelPath
+        /** Remove one or more MediaWidgets, identified by topLevelPath
          */
-        void removeResourcesByTopLevelPath (const QString& topLevelPath);
+        void removeMediaWidgetsByTopLevelPath (const QString& topLevelPath);
 
-        /** Remove one or more resource, identified by path
+        /** Remove one or more MediaWidgets, identified by path
          */
-        void removeResourcesByPath (const QString& path);
+        void removeMediaWidgetsByPath (const QString& path);
 
-        /** Remove one or more resource, identified by origin and the toplevel path
+        /** Remove one or more MediaWidget, identified by origin and the toplevel path
         @remarks The difference between the previous function is that multiple plugins
-        may have the same path, so more resources are unintendedly removed
+        may have the same path, so more MediaWidget are unintendedly removed
         */
-        void removeResourcesByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
+        void removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
 
     signals:
         // Emitted when an asset is added

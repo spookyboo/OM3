@@ -21,20 +21,58 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <ctime>
 #include "prerequisites.h"
+
+/****************************************************************************
+ Some statics
+ ***************************************************************************/
+static const std::string PLUGIN_TYPE_RESOURCE = "plugin_resource_type";
+static const std::string PLUGIN_TYPE_MEDIA_WIDGET = "plugin_media_widget_type";
 
 /****************************************************************************
  Structure of the meta data used by the plugins
  ***************************************************************************/
 struct _OgamExport AssetMetaData
 {
-    std::string origin;                             // Identification of the resource plugin (key)
-    double assetId;                                 // Identification of the asset
-    std::string topLevelPath;                       // Contains the top level path
-    std::string path;                               // Contains the path of the asset
-    std::string baseNameOrReference;                // Contains the (file) name of the asset
-    std::string fullQualifiedFileNameOrReference;   // Refers to a location of the asset
-    std::vector<std::string> tags;                  // An asset may contain [0..n] tags; used for searching
+    /* General asset properties. These properties define the characteristics of an asset. Because of the plugin architecture of Ogam,
+     * some of the AssetMetaData properties may or may not be used.
+     * TODO: Define which properties are mandatory; these are the properties used in Ogam itself.
+     *
+     */
+    std::string origin;                                         // Identification of the resource plugin
+    double assetId;                                             // Identification of the asset; e.g. a database key
+    std::string topLevelPath;                                   // Contains the top level path
+    std::string path;                                           // Contains the path of the asset
+    std::string baseNameOrReference;                            // Contains the (file) name of the asset
+    std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename)
+    std::string extension;                                      // The extension is used to define the media type of the asset and to derive the media widget plugin
+                                                                // is involved with creation of a media widget. Note, that the extension is without leading dot.
+                                                                // Even if the baseNameOrReference does not have an extension, it must still be provided, otherwise a
+                                                                // default media widget is used in the application.
+                                                                // Examples: "jpg", " fbx", "mesh", "mp3", ...
+    tm dateTimeAssetCreation;                                   // Timestamp when the asset was created; this is always GMT
+    tm dateTimeModified;                                        // Latest timestamp when the asset was modified; this is always GMT
+    long byteSize;                                              // Size of the asset in bytes
+
+    // Locking properties
+    tm dateTimeAssetLock;                                       // Timestamp indicating when the asset has been locked; this is always GMT
+    std::string lockedByUser;                                   // Identification of the user that currently locks the resource
+
+    // Properties, specific to the type of asset
+    // TODO:
+    // Images: dimensions, resolution, bitDepth
+    // Audio: codec, sampleRate bitsPerSample, duration, channels (mono/stereo)
+    // 3d models: numberOfVertices, numberOfIndices, hasNormals, hasTangents, hasUVs, hasAnimation
+    // Video: codec, dimensions, frameRate, bitRate, bitDepth
+    // Fonts:
+    // Presentations:
+
+    // Additional properties
+    // TODO: E.g. Licenses, tags, description,
+    std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
+    std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
 };
 
 /****************************************************************************

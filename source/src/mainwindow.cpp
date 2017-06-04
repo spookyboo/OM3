@@ -20,13 +20,17 @@
 #include <QString>
 #include <QFile>
 #include <QMenuBar>
+#include <QSettings>
 #include "constants.h"
 #include "mainwindow.h"
+#include "plugin_resource_interface.h"      // Only needed to force creation of 'plugin_resource_interface.obj', otherwise the plugins get a linking error
+#include "plugin_media_widget_interface.h"  // Only needed to force creation of 'plugin_media_widget_interface.obj', otherwise the plugins get a linking error
+
 typedef PluginInterface* (*PLUGIN_CREATE)(AssetsDockWidget* assetsDockWidget);
 typedef void (*PLUGIN_DELETE)(void);
 
 //****************************************************************************/
-MainWindow::MainWindow(void) : mIsClosing(false)
+MainWindow::MainWindow (void) : mIsClosing(false)
 {
 	// Perform standard functions
     createActions();
@@ -36,16 +40,49 @@ MainWindow::MainWindow(void) : mIsClosing(false)
     createDockWindows();
 
     // Add the workbench
-    mAssetsDockWidget->addWidget(new QWidget(), ICON_PATH + ICON_WORKBENCH, "Workbench");
-    // TODO: Change 'new QWidget()'
+    mAssetsDockWidget->addWidget(new MediaListWidget(), ICON_PATH + ICON_WORKBENCH, "Workbench");
 
-    // Load the plugins and add them to the AssesDockWidget
+    // Load the plugins and add them to the mPluginVector
+    // TODO: Plugins need to be loaded from a plugin.cfg file
     mDynLibManager = new DynLibManager();
-    mFileResourceLibrary = DynLibManager::getSingleton().load("OgamFileResourcePlugin"); // Loads the 'OgamFileResourcePlugin' library
-    PLUGIN_CREATE pFunc = reinterpret_cast<PLUGIN_CREATE>(mFileResourceLibrary->getSymbol("createPlugin")); // Reference to the function in the library that creates the plugin
-    PluginInterface* plugin = pFunc(mAssetsDockWidget); // Create the plugin in the library
-    plugin->install(); // Install adds a new tab to the mAssetsDockWidget (in case of the 'OgamFileResourcePlugin' library at least)
-    mPluginVector.append(plugin);
+    QSettings settings(OGAM_PLUGINS_CONFIG, QSettings::IniFormat);
+
+    // Loop through the plugins config file
+    mNumberOfLibraries = settings.value(PLUGINS_CONFIG_PROPERTY_NUMBER_OF_PLUGINS).toInt();
+    QString libraryName;
+    DynLib* library;
+    PluginInterface* plugin;
+    PluginMediaWidgetInterface* pluginMediaWidget;
+    PluginMediaWidgetInterface::SupportedExtensions extensions;
+    std::string extension;
+    PLUGIN_CREATE pFunc;
+    for (unsigned int i = 0; i < mNumberOfLibraries; ++i)
+    {
+        // Load all libraries defined in the plugins config file
+        libraryName = settings.value(PLUGINS_CONFIG_PROPERTY_PLUGINS_PREFIX + QVariant(i+1).toString()).toString();
+        library = DynLibManager::getSingleton().load(libraryName.toStdString()); // Loads the library
+        pFunc = reinterpret_cast<PLUGIN_CREATE>(library->getSymbol("createPlugin")); // Reference to the function in the library that creates the plugin
+        plugin = pFunc(mAssetsDockWidget); // Create the plugin in the library
+        plugin->install(); // Only for resource plugins: Install adds a new tab to the mAssetsDockWidget
+        mPluginVector.append(plugin);
+
+        // Add all extension/plugin combinations to the mMediaWidgetExtensionMap
+        if (plugin->getType() == PLUGIN_TYPE_MEDIA_WIDGET)
+        {
+            pluginMediaWidget = static_cast<PluginMediaWidgetInterface*>(plugin);
+            extensions.clear();
+            extensions = pluginMediaWidget->getSupportedExtensions();
+            PluginMediaWidgetInterface::SupportedExtensions::iterator it = extensions.begin();
+            PluginMediaWidgetInterface::SupportedExtensions::iterator itEnd = extensions.end();
+            while (it != itEnd)
+            {
+                extension = *it;
+                mMediaWidgetExtensionMap [extension] = pluginMediaWidget;
+                ++it;
+            }
+        }
+        mPluginVector.append(plugin);
+    }
 
     // Set the title
     setWindowTitle(QString("Open Game Asset Manager"));
@@ -59,13 +96,27 @@ MainWindow::MainWindow(void) : mIsClosing(false)
 }
 
 //****************************************************************************/
-MainWindow::~MainWindow(void)
+MainWindow::~MainWindow (void)
 {
-    // TODO: uninstall the plugins
+    QSettings settings(OGAM_PLUGINS_CONFIG, QSettings::IniFormat);
+    PLUGIN_DELETE pFunc;
+    QString libraryName;
+    std::string stdLibraryName;
+    DynLib* library;
+    for (unsigned int i = 0; i < mNumberOfLibraries; ++i)
+    {
+        libraryName = settings.value(PLUGINS_CONFIG_PROPERTY_PLUGINS_PREFIX).toString() + QVariant(i).toString();
+        stdLibraryName = libraryName.toStdString();
+        library = DynLibManager::getSingleton().getDynLib(stdLibraryName);
+        if (library)
+        {
+            // TODO: uninstall the plugins
 
-    PLUGIN_DELETE pFunc = reinterpret_cast<PLUGIN_DELETE>(mFileResourceLibrary->getSymbol("deletePlugin"));
-    pFunc(); // Deletes the plugin instance in the library
-    DynLibManager::getSingleton().unload(mFileResourceLibrary); // Unloads the library
+            pFunc = reinterpret_cast<PLUGIN_DELETE>(library->getSymbol("deletePlugin"));
+            pFunc(); // Deletes the plugin instance in the library
+            DynLibManager::getSingleton().unload(library); // Unloads the library
+        }
+    }
 }
 
 //****************************************************************************/
@@ -75,7 +126,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 }
 
 //****************************************************************************/
-void MainWindow::createActions(void)
+void MainWindow::createActions (void)
 {
     mNewMenuAction = new QAction(QString("New"), this);
     connect(mNewMenuAction, SIGNAL(triggered()), this, SLOT(doNewMenuAction()));
@@ -91,7 +142,7 @@ void MainWindow::createActions(void)
 }
 
 //****************************************************************************/
-void MainWindow::createMenus(void)
+void MainWindow::createMenus (void)
 {
     mWorkspaceMenu = menuBar()->addMenu(QString("&Workspace"));
     mWorkspaceMenu->addAction(mNewMenuAction);
@@ -105,19 +156,19 @@ void MainWindow::createMenus(void)
 }
 
 //****************************************************************************/
-void MainWindow::createToolBars(void)
+void MainWindow::createToolBars (void)
 {
 
 }
 
 //****************************************************************************/
-void MainWindow::createStatusBar(void)
+void MainWindow::createStatusBar (void)
 {
 
 }
 
 //****************************************************************************/
-void MainWindow::createDockWindows(void)
+void MainWindow::createDockWindows (void)
 {
     mCategoriesDockWidget = new CategoriesDockWidget("Categories", this);
     addDockWidget(Qt::LeftDockWidgetArea, mCategoriesDockWidget);
@@ -126,34 +177,34 @@ void MainWindow::createDockWindows(void)
 }
 
 //****************************************************************************/
-void MainWindow::doNewMenuAction(void)
+void MainWindow::doNewMenuAction (void)
 {
     // Replace the code in this function with your own code.
     QMessageBox::information(this, QString("QAction"), QString("Menu item <New> selected;\nMainWindow::doNewMenuAction() called"));
 }
 
 //****************************************************************************/
-void MainWindow::doOpenMenuAction(void)
+void MainWindow::doOpenMenuAction (void)
 {
     // Replace the code in this function with your own code.
     QMessageBox::information(this, QString("QAction"), QString("Menu item <Open> selected;\nMainWindow::doOpenMenuAction() called"));
 }
 
 //****************************************************************************/
-void MainWindow::doSaveMenuAction(void)
+void MainWindow::doSaveMenuAction (void)
 {
     // Replace the code in this function with your own code.
     QMessageBox::information(this, QString("QAction"), QString("Menu item <Save> selected;\nMainWindow::doSaveMenuAction() called"));
 }
 
 //****************************************************************************/
-void MainWindow::doQuitMenuAction(void)
+void MainWindow::doQuitMenuAction (void)
 {
     close();
 }
 
 //****************************************************************************/
-void MainWindow::doResetWindowLayoutMenuAction(void)
+void MainWindow::doResetWindowLayoutMenuAction (void)
 {
     mCategoriesDockWidget->show();
     addDockWidget(Qt::LeftDockWidgetArea, mCategoriesDockWidget);
@@ -169,7 +220,20 @@ void MainWindow::doResetWindowLayoutMenuAction(void)
 
 
 //****************************************************************************/
-void MainWindow::update(void)
+void MainWindow::update (void)
 {
 
+}
+
+//****************************************************************************/
+PluginMediaWidgetInterface* MainWindow::findPluginMediaWidgetByExtension (const std::string& extension)
+{
+    PluginMediaWidgetInterface* plugin = 0;
+    MediaWidgetExtensionMap::iterator i = mMediaWidgetExtensionMap.find(extension);
+    if (i != mMediaWidgetExtensionMap.end())
+    {
+        plugin = i.value();
+    }
+
+    return plugin;
 }

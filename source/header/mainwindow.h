@@ -36,17 +36,31 @@ QT_END_NAMESPACE
 /****************************************************************************
  MainWindow is the main container window
  ***************************************************************************/
+class PluginMediaWidgetInterface;
 class _OgamExport MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 	public:
         typedef QVector<PluginInterface*> PluginVector;
+
+        /** The MediaWidgetExtensionMap contains all extensions and pointers to the MediaWidget plugins
+         * that creates the MediaWidget for this extension.
+         * @remarks A QMap is used (instead of a multimap) to allow overwriting extension; this way it becomes
+         * possible that an extension/plugin combination is overwritten, because a better solution is available.
+         * This can be tweaked by changing the plugin order in the plugins config file.
+         */
+        typedef QMap<std::string, PluginMediaWidgetInterface*> MediaWidgetExtensionMap;
 		MainWindow(void);
 		~MainWindow(void);
 		void update(void);
 		bool mIsClosing;
 
+        /** This function returns a pointer to a plugin that is able to ceate a MediaWidget for
+         * a certain extension. E.g. if the extension is "jpg", the OgamMediaWidgetTexturePlugin
+         * is returned (unless the plugin is surpassed by another plugin).
+         */
+        PluginMediaWidgetInterface* findPluginMediaWidgetByExtension (const std::string& extension);
 
 	private slots:
         void doNewMenuAction(void);
@@ -75,8 +89,9 @@ class _OgamExport MainWindow : public QMainWindow
         CategoriesDockWidget* mCategoriesDockWidget;
         AssetsDockWidget* mAssetsDockWidget;
         DynLibManager* mDynLibManager;
-        DynLib* mFileResourceLibrary;
         PluginVector mPluginVector;
+        unsigned int mNumberOfLibraries;
+        MediaWidgetExtensionMap mMediaWidgetExtensionMap;
 };
 
 #endif

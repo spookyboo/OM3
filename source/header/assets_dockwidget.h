@@ -28,6 +28,7 @@
 #include <QToolBar>
 #include <QTabWidget>
 #include "media_listwidget.h"
+#include "media_widget.h"
 
 QT_BEGIN_NAMESPACE
 class QDockWidget;
@@ -39,31 +40,38 @@ class ResourceWidget;
 /****************************************************************************
  This class represents a DockWidget
  ***************************************************************************/
+class PluginMediaWidgetInterface;
 class _OgamExport AssetsDockWidget : public QDockWidget
 {
 	Q_OBJECT
 
 	public:
-		AssetsDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
-		~AssetsDockWidget(void);
+        AssetsDockWidget (QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
+        ~AssetsDockWidget (void);
 
-        /* Add a new tab to the AssetsDockWidget and set the widget, passed as an
+        /** Add a new tab to the AssetsDockWidget and set the widget, passed as an
          * argument, in the tab.
          */
         void addWidget (QWidget* widget,
                         QString fullQualifiedIconName,
                         QString tabName);
 
-        MediaListWidget* createMediaListWidget(void);
+        /** Returns an instance of a MediaWidget, based on the (file) extension of the asset/resource.
+         * A specific MediaWidget plugin is used to actually create the MediaWidget
+         * This MediaListWidget is not managed by the AssetsDockWidget.
+         */
+        MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData);
 
-	private slots:
-        void tabSelected(int index);
+    private slots:
+        void tabSelected (int index);
 
 	private:
 		MainWindow* mParent;
         QMainWindow* mInnerMain;
         QTabWidget* mTabWidget;
+        PluginMediaWidgetInterface* mDefaultMediaWidgetPlugin;
         bool mResourcesAdded; // Determines wether a ResourceWidget was added
+        bool mDefaultMediaWidgetPluginMissingWarning; // Used to inform that a plugin is missing
 };
 
 #endif

@@ -61,6 +61,18 @@ class _OgamExport DynLibManager: public Singleton<DynLibManager>
         */
         void unload(DynLib* lib);
 
+        /** Unloads the passed library.
+        @param fileName
+            The name of the library. The extension can be omitted.
+        */
+        void unload (const std::string& filename);
+
+        /** get pointer to a DynLib.
+        @param fileName
+            The name of the library. The extension can be omitted.
+        */
+        DynLib* getDynLib (const std::string& filename);
+
         /** Override standard Singleton retrieval.
         @remarks
         Why do we do this? Well, it's because the Singleton

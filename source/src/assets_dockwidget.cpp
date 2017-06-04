@@ -20,13 +20,17 @@
 #include "constants.h"
 #include "mainwindow.h"
 #include "Assets_dockwidget.h"
+#include "plugin_media_widget_interface.h"
 
 //****************************************************************************/
-AssetsDockWidget::AssetsDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags) : 
+AssetsDockWidget::AssetsDockWidget (QString title, MainWindow* parent, Qt::WindowFlags flags) :
 	QDockWidget (title, parent, flags), 
-    mParent(parent),
-    mResourcesAdded(false)
+    mParent (parent),
+    mResourcesAdded (false),
+    mDefaultMediaWidgetPlugin (0),
+    mDefaultMediaWidgetPluginMissingWarning (false)
 {
+    // Create widgets
     mInnerMain = new QMainWindow();
     setWidget(mInnerMain);
     mTabWidget = new QTabWidget(mInnerMain);
@@ -35,7 +39,7 @@ AssetsDockWidget::AssetsDockWidget(QString title, MainWindow* parent, Qt::Window
 }
 
 //****************************************************************************/
-AssetsDockWidget::~AssetsDockWidget(void)
+AssetsDockWidget::~AssetsDockWidget (void)
 {
 }
 
@@ -59,14 +63,44 @@ void AssetsDockWidget::addWidget (QWidget* widget,
 
 
 //****************************************************************************/
-void AssetsDockWidget::tabSelected(int index)
+void AssetsDockWidget::tabSelected (int index)
 {
     // Replace the code in this function with your own code.
     //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
     //QMessageBox::information(this, QString("QTabWidget"), message);
 }
 
-MediaListWidget* AssetsDockWidget::createMediaListWidget(void)
+//****************************************************************************/
+MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMetaData)
 {
-    return new MediaListWidget();
+    // The plugins are registered in mParent
+    PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData.extension);
+    if (plugin)
+    {
+        // The plugin is found, so it creates the appropriate widget
+        return plugin->createMediaWidget(assetMetaData);
+    }
+    else if (mDefaultMediaWidgetPlugin)
+    {
+        // The specific plugin is not found, so use the default
+        return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData);
+    }
+    else
+    {
+        // The default plugin was not yet created, so create it first
+        mDefaultMediaWidgetPlugin = mParent->findPluginMediaWidgetByExtension ("default");
+        if (mDefaultMediaWidgetPlugin)
+        {
+            return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData);
+        }
+        else
+        {
+            if (!mDefaultMediaWidgetPluginMissingWarning)
+            {
+                // Warning; Once is enough
+                QMessageBox::warning (0, QString("Warning"), QString("The default media widget plugin is missing; did you add it to the plugins.cfg file?"));
+                mDefaultMediaWidgetPluginMissingWarning = true;
+            }
+        }
+    }
 }

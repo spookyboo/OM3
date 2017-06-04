@@ -19,7 +19,8 @@ HEADERS       = \
     source/header/tool_default_texturewidget.h \
     source/header/plugin_media_widget_interface.h \
     source/header/core.h \
-    source/header/treewidget.h
+    source/header/treewidget.h \
+    source/header/media_widget.h
 
 SOURCES       = \
     source/src/main.cpp \

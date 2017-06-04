@@ -18,10 +18,7 @@
 
 // Include
 #include "media_listwidget.h"
-#include <QLabel>
-#include <QPixmap>
-#include <QHBoxLayout>
-#include <QLineEdit>
+#include <media_widget.h>
 
 //****************************************************************************/
 MediaListWidget::MediaListWidget (QWidget* parent) :
@@ -47,54 +44,40 @@ MediaListWidget::~MediaListWidget(void)
 }
 
 //****************************************************************************/
-void MediaListWidget::addResource (const AssetMetaData& assetMetaData)
+void MediaListWidget::addMediaWidget (MediaWidget* mediaWidget)
 {
-    /* TODO: Determine the media type. This is needed to determine which 'media widget plugin'
-     * is needed. The specific 'media widget plugin' creates the widget
-     */
+    if (!mediaWidget)
+        return;
 
-    // TEST
     QListWidgetItem* item = new QListWidgetItem(this);
-    QWidget* widget = new QWidget(); // Must pass this QListWidget as parent
-    QPixmap pixmap(QString("../common/icons/folder.png"));
-    QLabel* label = new QLabel();
-    QHBoxLayout* layout = new QHBoxLayout;
-    label->setPixmap(pixmap);
-    label->setScaledContents(true);
-    layout->addWidget(label);
-    widget->setLayout(layout);
-    QSize size(100, 100);
-    widget->setMinimumSize(size);
-    widget->setMouseTracking(true);
-    item->setSizeHint(size); // Must be present, otherwise the widget is not shown
-    addItem(item);
-    setItemWidget(item, widget);
+    QSize size = mediaWidget->size();
+    item->setSizeHint(size); // Must be present, otherwise the mediaWidget is not shown
+    setItemWidget(item, mediaWidget);
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    mAssetMap[item] = assetMetaData;
-    //widget->show();
-    // TEST
+    addItem(item);
+    mAssetMap[item] = mediaWidget->getAssetMetaData();
 }
 
 //****************************************************************************/
-void MediaListWidget::removeResourceByAssetId (double assetId)
+void MediaListWidget::removeMediaWidgetByAssetId (double assetId)
 {
     // TODO
 }
 
 //****************************************************************************/
-void MediaListWidget::removeResourcesByPath (const QString& path)
+void MediaListWidget::removeMediaWidgetsByPath (const QString& path)
 {
     // TODO
 }
 
 //****************************************************************************/
-void MediaListWidget::removeResourcesByTopLevelPath (const QString& path)
+void MediaListWidget::removeMediaWidgetsByTopLevelPath (const QString& path)
 {
     // TODO
 }
 
 //****************************************************************************/
-void MediaListWidget::removeResourcesByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath)
+void MediaListWidget::removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath)
 {
     QListWidgetItem* item;
     AssetMetaData assetMetaData;
