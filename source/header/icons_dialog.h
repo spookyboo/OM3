@@ -1,8 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 - 2017
-**
-** This file is part of the Magus toolkit
+** Copyright (C) 2017, Henry van Merode
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -50,7 +48,7 @@ class _OgamExport IconsDialog : public QDialog
         void addTextureFile (const QString& fileName);
 
     private:
-        Magus::QtDefaultTextureWidget* mTextureWidget;
+        QtDefaultTextureWidget* mTextureWidget;
         QString mSelectedIconFilename;
         QString mSelectedIconBasename;
 };

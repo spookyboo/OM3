@@ -1,8 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 - 2017
-**
-** This file is part of the Magus toolkit
+** Copyright (C) 2017, Henry van Merode
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -28,7 +26,7 @@
 #include <QPixmap>
 #include <QException>
 #include "constants.h"
-#include "magus_core.h"
+#include "core.h"
 #include "icons_dialog.h"
 
 //****************************************************************************/
@@ -41,7 +39,7 @@ IconsDialog::IconsDialog(QWidget* parent) :
     QVBoxLayout* mainLayout = new QVBoxLayout;
 
     // Texture widget
-    mTextureWidget = new Magus::QtDefaultTextureWidget(this);
+    mTextureWidget = new QtDefaultTextureWidget(this);
     mTextureWidget->setTextureSize(QSize(72, 64)); // Add 8 pixels to the width to compensate the frame width
     connect(mTextureWidget, SIGNAL(selected(QString,QString)), this, SLOT(handleAssetSelected(QString,QString)));
     connect(mTextureWidget, SIGNAL(doubleClicked(QString,QString)), this, SLOT(handleAssetDoubleClicked(QString,QString)));
@@ -113,7 +111,7 @@ void IconsDialog::addTextureFile (const QString& fileName)
     QPixmap pixmap;
     try
     {
-        if (Magus::fileExist(fileName))
+        if (fileExist(fileName))
         {
             // Decrease the texture, otherwise it cannot be loaded by the pixmap
             QImageReader reader(fileName);
