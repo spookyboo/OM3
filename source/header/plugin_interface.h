@@ -62,7 +62,7 @@ struct _OM3Export AssetMetaData
 
     // Properties, specific to the type of asset
     // TODO:
-    // Images: dimensions, resolution, bitDepth
+    // Images/textures: dimensions, resolution, bitDepth
     // Audio: codec, sampleRate bitsPerSample, duration, channels (mono/stereo)
     // 3d models: numberOfVertices, numberOfIndices, hasNormals, hasTangents, hasUVs, hasAnimation
     // Video: codec, dimensions, frameRate, bitRate, bitDepth
@@ -71,6 +71,8 @@ struct _OM3Export AssetMetaData
 
     // Additional properties
     // TODO: E.g. Licenses, tags, description,
+    // TODO: Add a derivedCategory; this is determined based on extension and/or other properties. A user can put the asset in another category,
+    // but this is what OM3 determines itself
     std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
     std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
 };
