@@ -39,7 +39,7 @@ class MediaWidget : public QWidget
           */
         const AssetMetaData& getAssetMetaData (void) const {return mAssetMetaData;}
 
-    private:
+    protected:
         AssetMetaData mAssetMetaData;
 };
 
