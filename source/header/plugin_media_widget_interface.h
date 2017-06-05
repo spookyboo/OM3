@@ -16,8 +16,8 @@
 **
 ****************************************************************************/
 
-#ifndef __OGAM_MEDIA_WIDGET_PLUGIN_H__
-#define __OGAM_MEDIA_WIDGET_PLUGIN_H__
+#ifndef __OM3_MEDIA_WIDGET_PLUGIN_H__
+#define __OM3_MEDIA_WIDGET_PLUGIN_H__
 
 #include "plugin_interface.h"
 
@@ -29,7 +29,7 @@
  media files.
  ***************************************************************************/
 class MediaWidget;
-class _OgamExport PluginMediaWidgetInterface : public PluginInterface
+class _OM3Export PluginMediaWidgetInterface : public PluginInterface
 {
     public:
         typedef std::vector<std::string> SupportedExtensions;
@@ -47,8 +47,8 @@ class _OgamExport PluginMediaWidgetInterface : public PluginInterface
         */
         virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData) = 0;
 
-        /** Returns the supported extensions. This information is used by Ogam and
-         * Ogam plugins to determine which plugin is needed to display a certain asset.
+        /** Returns the supported extensions. This information is used by OM3 and
+         * OM3 plugins to determine which plugin is needed to display a certain asset.
         */
         virtual const SupportedExtensions& getSupportedExtensions (void) const = 0;
 };

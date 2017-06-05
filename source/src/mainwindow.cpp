@@ -45,7 +45,7 @@ MainWindow::MainWindow (void) : mIsClosing(false)
     // Load the plugins and add them to the mPluginVector
     // TODO: Plugins need to be loaded from a plugin.cfg file
     mDynLibManager = new DynLibManager();
-    QSettings settings(OGAM_PLUGINS_CONFIG, QSettings::IniFormat);
+    QSettings settings(OM3_PLUGINS_CONFIG, QSettings::IniFormat);
 
     // Loop through the plugins config file
     mNumberOfLibraries = settings.value(PLUGINS_CONFIG_PROPERTY_NUMBER_OF_PLUGINS).toInt();
@@ -98,7 +98,7 @@ MainWindow::MainWindow (void) : mIsClosing(false)
 //****************************************************************************/
 MainWindow::~MainWindow (void)
 {
-    QSettings settings(OGAM_PLUGINS_CONFIG, QSettings::IniFormat);
+    QSettings settings(OM3_PLUGINS_CONFIG, QSettings::IniFormat);
     PLUGIN_DELETE pFunc;
     QString libraryName;
     std::string stdLibraryName;

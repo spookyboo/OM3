@@ -38,7 +38,7 @@ class MainWindow;
 /****************************************************************************
  This class represents a DockWidget
  ***************************************************************************/
-class _OgamExport CategoriesDockWidget : public QDockWidget
+class _OM3Export CategoriesDockWidget : public QDockWidget
 {
 	Q_OBJECT
 

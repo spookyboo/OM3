@@ -80,7 +80,7 @@ resources:
 - Groups (or folders) in the most top-level and subgroups in deeper levels.
 - Assets are located in the lowest levels.
 ***************************************************************************/
-class _OgamExport QtResourceTreeWidget : public QWidget
+class _OM3Export QtResourceTreeWidget : public QWidget
 {
     Q_OBJECT
 

@@ -31,7 +31,7 @@
     libraries, opens them and returns references to already-open
     libraries.
 */
-class _OgamExport DynLibManager: public Singleton<DynLibManager>
+class _OM3Export DynLibManager: public Singleton<DynLibManager>
 {
     protected:
         typedef std::map<std::string, DynLib*> DynLibList;

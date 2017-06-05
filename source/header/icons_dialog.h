@@ -27,7 +27,7 @@
 QT_BEGIN_NAMESPACE
 QT_END_NAMESPACE
 
-class _OgamExport IconsDialog : public QDialog
+class _OM3Export IconsDialog : public QDialog
 {
     Q_OBJECT
 

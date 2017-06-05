@@ -16,8 +16,8 @@
 **
 ****************************************************************************/
 
-#ifndef __OGAM_PLUGIN_INTERFACE_H__
-#define __OGAM_PLUGIN_INTERFACE_H__
+#ifndef __OM3_PLUGIN_INTERFACE_H__
+#define __OM3_PLUGIN_INTERFACE_H__
 
 #include <string>
 #include <vector>
@@ -34,11 +34,11 @@ static const std::string PLUGIN_TYPE_MEDIA_WIDGET = "plugin_media_widget_type";
 /****************************************************************************
  Structure of the meta data used by the plugins
  ***************************************************************************/
-struct _OgamExport AssetMetaData
+struct _OM3Export AssetMetaData
 {
-    /* General asset properties. These properties define the characteristics of an asset. Because of the plugin architecture of Ogam,
+    /* General asset properties. These properties define the characteristics of an asset. Because of the plugin architecture of OM3,
      * some of the AssetMetaData properties may or may not be used.
-     * TODO: Define which properties are mandatory; these are the properties used in Ogam itself.
+     * TODO: Define which properties are mandatory; these are the properties used in OM3 itself.
      *
      */
     std::string origin;                                         // Identification of the resource plugin
@@ -78,14 +78,14 @@ struct _OgamExport AssetMetaData
 /****************************************************************************
  Defines the interface of a plugin.
  ***************************************************************************/
-class _OgamExport PluginInterface
+class _OM3Export PluginInterface
 {
     public:
         PluginInterface() {}
         virtual ~PluginInterface() {}
 
         /** Get the type of the plugin.
-        @remarks Ogam is capable of loading libraries with different plugin types
+        @remarks OM3 is capable of loading libraries with different plugin types
         */
         virtual const std::string& getType (void) const = 0;
 

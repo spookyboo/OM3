@@ -1,6 +1,6 @@
 QT += widgets
 
-DEFINES += OGAM_IMPORT_EXPORT_PLUGIN_EXPORTS
+DEFINES += OM3_IMPORT_EXPORT_PLUGIN_EXPORTS
 
 HEADERS       = \
     source/header/mainwindow.h \
@@ -36,10 +36,10 @@ SOURCES       = \
     source/src/tool_default_texturewidget.cpp \
     source/src/treewidget.cpp
 
-INCLUDEPATH += "../Ogam/source/header/"
+INCLUDEPATH += "../OM3/source/header/"
 
-Release:DESTDIR = ../Ogam/bin
-Debug:DESTDIR = ../Ogam/bin
+Release:DESTDIR = ../OM3/bin
+Debug:DESTDIR = ../OM3/bin
 target.path = $$[QTDIR]/
 INSTALLS += target
 

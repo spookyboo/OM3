@@ -21,13 +21,13 @@
 
 //----------------------------------------------------------------------------
 #if WIN32 || WIN64
-    #ifdef OGAM_IMPORT_EXPORT_PLUGIN_EXPORTS
-        #define _OgamExport __declspec( dllexport )
+    #ifdef OM3_IMPORT_EXPORT_PLUGIN_EXPORTS
+        #define _OM3Export __declspec( dllexport )
     #else
         #if defined( __MINGW32__ )
-            #define _OgamExport
+            #define _OM3Export
         #else
-            #define _OgamExport __declspec(dllimport)
+            #define _OM3Export __declspec(dllimport)
         #endif
     #endif
 #endif

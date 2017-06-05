@@ -41,7 +41,7 @@ class ResourceWidget;
  This class represents a DockWidget
  ***************************************************************************/
 class PluginMediaWidgetInterface;
-class _OgamExport AssetsDockWidget : public QDockWidget
+class _OM3Export AssetsDockWidget : public QDockWidget
 {
 	Q_OBJECT
 

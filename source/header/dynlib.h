@@ -39,10 +39,10 @@ typedef struct HINSTANCE__* hInstance;
 * on Linux. Note, that only the Windows part implementation is present.
 *
 * Each library must implement the external functions 'createPlugin' and
-* 'deletePlugin', getting a reference to the Ogam application by means of
+* 'deletePlugin', getting a reference to the OM3 application by means of
 * passing a pointer to the 'AssetsDockWidget' instance
 ***************************************************************************/
-class _OgamExport DynLib
+class _OM3Export DynLib
 {
     protected:
 		std::string mName;

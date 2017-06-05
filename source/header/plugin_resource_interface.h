@@ -16,8 +16,8 @@
 **
 ****************************************************************************/
 
-#ifndef __OGAM_RESOURCE_PLUGIN_H__
-#define __OGAM_RESOURCE_PLUGIN_H__
+#ifndef __OM3_RESOURCE_PLUGIN_H__
+#define __OM3_RESOURCE_PLUGIN_H__
 
 #include "plugin_interface.h"
 
@@ -26,7 +26,7 @@
  git, database, etc.
  ***************************************************************************/
 class MediaWidget;
-class _OgamExport PluginResourceInterface : public PluginInterface
+class _OM3Export PluginResourceInterface : public PluginInterface
 {
     public:
         PluginResourceInterface (void) {}
@@ -36,7 +36,7 @@ class _OgamExport PluginResourceInterface : public PluginInterface
         */
         virtual const std::string& getType (void) const {return PLUGIN_TYPE_RESOURCE;}
 
-        /** Pass the information of a resource from the plugin to the main Ogam application
+        /** Pass the information of a resource from the plugin to the main OM3 application
         As a result, a pointer to a created MediaWidget is returned, which should be used by
         the plugin.
         @remarks If not used, just destroy the widget.

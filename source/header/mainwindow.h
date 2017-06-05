@@ -37,7 +37,7 @@ QT_END_NAMESPACE
  MainWindow is the main container window
  ***************************************************************************/
 class PluginMediaWidgetInterface;
-class _OgamExport MainWindow : public QMainWindow
+class _OM3Export MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
@@ -57,7 +57,7 @@ class _OgamExport MainWindow : public QMainWindow
 		bool mIsClosing;
 
         /** This function returns a pointer to a plugin that is able to ceate a MediaWidget for
-         * a certain extension. E.g. if the extension is "jpg", the OgamMediaWidgetTexturePlugin
+         * a certain extension. E.g. if the extension is "jpg", the OM3MediaWidgetTexturePlugin
          * is returned (unless the plugin is surpassed by another plugin).
          */
         PluginMediaWidgetInterface* findPluginMediaWidgetByExtension (const std::string& extension);
