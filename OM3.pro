@@ -13,14 +13,14 @@ HEADERS       = \
     source/header/dynlib_manager.h \
     source/header/singleton.h \
     source/header/prerequisites.h \
-    source/header/plugin_resource_interface.h \
     source/header/plugin_interface.h \
     source/header/media_listwidget.h \
     source/header/tool_default_texturewidget.h \
     source/header/plugin_media_widget_interface.h \
     source/header/core.h \
     source/header/treewidget.h \
-    source/header/media_widget.h
+    source/header/media_widget.h \
+    source/header/plugin_resource_provider_interface.h
 
 SOURCES       = \
     source/src/main.cpp \
