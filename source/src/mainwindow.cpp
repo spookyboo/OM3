@@ -39,8 +39,8 @@ MainWindow::MainWindow (void) : mIsClosing(false)
     createStatusBar();
     createDockWindows();
 
-    // Add the workbench
-    mAssetsDockWidget->addWidget(new MediaListWidget(), ICON_PATH + ICON_WORKBENCH, "Workbench");
+    // Add the workbench;  OM3 iself is the 'resource provider' and adds an instance of MediaListWidget to the tab
+    mAssetsDockWidget->addResourceProviderWidget (new MediaListWidget(), ICON_PATH + ICON_WORKBENCH, "Workbench");
 
     // Load the plugins and add them to the mPluginVector
     // TODO: Plugins need to be loaded from a plugin.cfg file

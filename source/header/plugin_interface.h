@@ -46,7 +46,12 @@ struct _OM3Export AssetMetaData
     std::string topLevelPath;                                   // Contains the top level path
     std::string path;                                           // Contains the path of the asset
     std::string baseNameOrReference;                            // Contains the (file) name of the asset
-    std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename)
+    std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename); this is the original location
+    std::string fullQualifiedFileNameImport;                    // Refers to a file location of the asset (path+filename) after it was imported by the resource provider.
+                                                                // An asset could be stored in a database, but when it is used by the OM3 application it must be in a
+                                                                // file format. This file is managed by the resource provider.
+    std::string fullQualifiedFileNameLocal;                     // Refers to a file location of the asset (path+filename) when locked by the user. The file is managed by the
+                                                                // OM3 appliction itself.
     std::string extension;                                      // The extension is used to define the media type of the asset and to derive the media widget plugin
                                                                 // is involved with creation of a media widget. Note, that the extension is without leading dot.
                                                                 // Even if the baseNameOrReference does not have an extension, it must still be provided, otherwise a

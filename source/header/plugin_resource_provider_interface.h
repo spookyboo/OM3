@@ -36,12 +36,11 @@ class _OM3Export PluginResourceProviderInterface : public PluginInterface
         */
         virtual const std::string& getType (void) const {return PLUGIN_TYPE_RESOURCE;}
 
-        /** Pass the information of a resource from the plugin to the main OM3 application
-        As a result, a pointer to a created MediaWidget is returned, which should be used by
-        the plugin.
-        @remarks If not used, just destroy the widget.
+        /** Pass the information of an asset from the resource provider plugin to the main
+         * OM3 application. As a result, a pointer to a created MediaWidget is returned,
+         * which should be used by the plugin to display the asset.
         */
-        virtual MediaWidget* addResource (const AssetMetaData& assetMetaData) = 0;
+        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData) = 0;
 };
 
 #endif

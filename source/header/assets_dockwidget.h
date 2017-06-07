@@ -49,12 +49,14 @@ class _OM3Export AssetsDockWidget : public QDockWidget
         AssetsDockWidget (QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
         ~AssetsDockWidget (void);
 
-        /** Add a new tab to the AssetsDockWidget and set the widget, passed as an
-         * argument, in the tab.
+        /** Add a new tab to the AssetsDockWidget and set the widget, created by the resource
+         * provider, in the tab. This widget can be any kind of QWidget. OM3 does not enforce how
+         * a resource provider is implemented. It only expects a widget that can be displayed in the
+         * tab
          */
-        void addWidget (QWidget* widget,
-                        QString fullQualifiedIconName,
-                        QString tabName);
+        void addResourceProviderWidget (QWidget* widget,
+                                        QString fullQualifiedIconName,
+                                        QString tabName);
 
         /** Returns an instance of a MediaWidget, based on the (file) extension of the asset/resource.
          * A specific MediaWidget plugin is used to actually create the MediaWidget

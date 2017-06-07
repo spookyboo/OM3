@@ -44,9 +44,9 @@ AssetsDockWidget::~AssetsDockWidget (void)
 }
 
 //****************************************************************************/
-void AssetsDockWidget::addWidget (QWidget* widget,
-                                  QString fullQualifiedIconName,
-                                  QString tabName)
+void AssetsDockWidget::addResourceProviderWidget (QWidget* widget,
+                                                  QString fullQualifiedIconName,
+                                                  QString tabName)
 {
     // Ad a new tab with the resourceWidget to the AssetsDockWidget
     mTabWidget->addTab(widget, QIcon(fullQualifiedIconName), tabName);
