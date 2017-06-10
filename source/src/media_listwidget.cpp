@@ -17,8 +17,12 @@
 ****************************************************************************/
 
 // Include
+#include <QMessageBox>
+#include <QHBoxLayout>
+#include <QPixmap>
+#include <QLabel>
 #include "media_listwidget.h"
-#include <media_widget.h>
+#include "media_widget.h"
 
 //****************************************************************************/
 MediaListWidget::MediaListWidget (QWidget* parent) :
@@ -26,8 +30,6 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
 {
     // Define display mode
     setMouseTracking(true);
-    //setAcceptDrops(true);
-    //setDropIndicatorShown(true);
     setViewMode(QListView::ListMode);
     setWrapping(true);
     setWordWrap(true);
@@ -35,7 +37,8 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
     setUniformItemSizes(true);
     setMovement(QListView::Snap);
     setFlow(QListView::LeftToRight);
-    //setStyleSheet("background: yellow");
+    setResizeMode(QListView::Adjust);
+    setDragEnabled(false);
 }
 
 //****************************************************************************/
@@ -49,12 +52,11 @@ void MediaListWidget::addMediaWidget (MediaWidget* mediaWidget)
     if (!mediaWidget)
         return;
 
-    QListWidgetItem* item = new QListWidgetItem(this);
+    QListWidgetItem* item = new QListWidgetItem();
     QSize size = mediaWidget->size();
     item->setSizeHint(size); // Must be present, otherwise the mediaWidget is not shown
-    setItemWidget(item, mediaWidget);
-    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     addItem(item);
+    setItemWidget(item, mediaWidget);
     mAssetMap[item] = mediaWidget->getAssetMetaData();
 }
 

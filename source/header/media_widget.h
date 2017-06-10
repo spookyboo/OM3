@@ -28,7 +28,8 @@ A Media widgets is used to show a media file as a widget (e.g. in the workbench
 class MediaWidget : public QWidget
 {
     public:
-        MediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0)
+        MediaWidget (const AssetMetaData& assetMetaData, QWidget* parent) :
+            QWidget(parent)
         {
             mAssetMetaData = assetMetaData;
         }

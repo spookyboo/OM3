@@ -62,7 +62,7 @@ class _OM3Export AssetsDockWidget : public QDockWidget
          * A specific MediaWidget plugin is used to actually create the MediaWidget
          * This MediaListWidget is not managed by the AssetsDockWidget.
          */
-        MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData);
+        MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0);
 
     private slots:
         void tabSelected (int index);

@@ -67,10 +67,6 @@ class MediaListWidget : public QListWidget
 
     protected:
         void deleteItem(QListWidgetItem* item);
-        //virtual void keyPressEvent(QKeyEvent* event);
-        //virtual void dropEvent(QDropEvent* event);
-        //virtual void dragEnterEvent(QDragEnterEvent *event);
-        //virtual void dragMoveEvent(QDragMoveEvent *event);
 
     private:
         AssetMap mAssetMap;

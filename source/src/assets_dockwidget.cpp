@@ -71,19 +71,19 @@ void AssetsDockWidget::tabSelected (int index)
 }
 
 //****************************************************************************/
-MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMetaData)
+MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent)
 {
     // The plugins are registered in mParent
     PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData.extension);
     if (plugin)
     {
         // The plugin is found, so it creates the appropriate widget
-        return plugin->createMediaWidget(assetMetaData);
+        return plugin->createMediaWidget(assetMetaData, parent);
     }
     else if (mDefaultMediaWidgetPlugin)
     {
         // The specific plugin is not found, so use the default
-        return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData);
+        return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData, parent);
     }
     else
     {
@@ -91,7 +91,7 @@ MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMeta
         mDefaultMediaWidgetPlugin = mParent->findPluginMediaWidgetByExtension ("default");
         if (mDefaultMediaWidgetPlugin)
         {
-            return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData);
+            return mDefaultMediaWidgetPlugin->createMediaWidget(assetMetaData, parent);
         }
         else
         {

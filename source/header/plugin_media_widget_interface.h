@@ -45,7 +45,7 @@ class _OM3Export PluginMediaWidgetInterface : public PluginInterface
          * @remarks Note, that only a MediaWidget is created when the
          * extension of the asset is supported.
         */
-        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData) = 0;
+        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0) = 0;
 
         /** Returns the supported extensions. This information is used by OM3 and
          * OM3 plugins to determine which plugin is needed to display a certain asset.

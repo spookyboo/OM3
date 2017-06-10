@@ -25,6 +25,7 @@
  Defines the interface of a resource plugin. Resources are file system, subversion
  git, database, etc.
  ***************************************************************************/
+class QWidget;
 class MediaWidget;
 class _OM3Export PluginResourceProviderInterface : public PluginInterface
 {
@@ -40,7 +41,7 @@ class _OM3Export PluginResourceProviderInterface : public PluginInterface
          * OM3 application. As a result, a pointer to a created MediaWidget is returned,
          * which should be used by the plugin to display the asset.
         */
-        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData) = 0;
+        virtual MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0) = 0;
 };
 
 #endif
