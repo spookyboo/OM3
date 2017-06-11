@@ -40,6 +40,10 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
     setResizeMode(QListView::Adjust);
     setDragEnabled(false);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    // Create context menu
+    mContextMenu = new QMenu(this);
+    setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 //****************************************************************************/
@@ -113,4 +117,53 @@ void MediaListWidget::deleteItem(QListWidgetItem* item)
     takeItem(r);
     delete widget;
     delete item;
+}
+
+//****************************************************************************/
+void MediaListWidget::addContextMenuItem (const QString& actionText, MediaListWidget::ContextMenuContext context)
+{
+    //mContextMenu->addAction(new QAction(actionText));
+    mContextMap[actionText] = context;
+}
+
+//****************************************************************************/
+void MediaListWidget::buildContextmenu (void)
+{
+    // First, remove all actions from the contextmenu
+    mContextMenu->clear();
+
+    // Show all items in the context menu that are in the context of selected items
+    bool hasSelectedItems = !selectedItems().empty();
+    if (hasSelectedItems)
+    {
+        ContextMap::const_iterator it = mContextMap.begin();
+        ContextMap::const_iterator itEnd = mContextMap.end();
+        while (it != itEnd)
+        {
+            if (it.value() == ContextMenuContext::CONTEXT_MEDIA_ITEMS_SELECTED)
+            {
+                mContextMenu->addAction(new QAction(it.key()));
+            }
+            ++it;
+        }
+    }
+
+    if (selectedItems().size() == 1)
+    {
+        /* There is only 1 item selected. Add the specific actions of that MediaWidget to the
+         * contextmenu. This is done by going through its action vector.
+         */
+        QListWidgetItem* item = selectedItems().at(0);
+        MediaWidget* mediaWidget = static_cast<MediaWidget*>(itemWidget(item));
+        std::vector <AssetMetaData::MediaWidgetAction> actionVec = mediaWidget->getAssetMetaData().mediaWidgetActionVec;
+        std::vector <AssetMetaData::MediaWidgetAction>::const_iterator it = actionVec.begin();
+        std::vector <AssetMetaData::MediaWidgetAction>::const_iterator itEnd = actionVec.end();
+        AssetMetaData::MediaWidgetAction action;
+        while (it != itEnd)
+        {
+            action = *it;
+            mContextMenu->addAction(new QAction(action.actionText.c_str()));
+            ++it;
+        }
+    }
 }

@@ -71,6 +71,13 @@ class _OM3Export AssetsDockWidget : public QDockWidget
          */
         void addResourceToWorkbench (const AssetMetaData& assetMetaData);
 
+        /** Returns the value of a global property. These properties are stored in a configuration
+         * file and can be retrieved when needed
+         * @remark Whoever uses this function must know the type of this property, because it is
+         * returned as a QVariant.
+         */
+        const QVariant& getGlobalConfigPropertyValue (const QString& propertyName);
+
     private slots:
         void tabSelected (int index);
 

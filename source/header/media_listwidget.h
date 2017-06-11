@@ -21,6 +21,7 @@
 
 #include <QListWidget>
 #include <QMap>
+#include <QMenu>
 #include "plugin_interface.h"
 
 /****************************************************************************
@@ -39,7 +40,16 @@ class MediaWidget;
 class MediaListWidget : public QListWidget
 {
     public:
+        // Enums and typedefs
+        enum ContextMenuContext
+        {
+            CONTEXT_MEDIA_ITEMS_SELECTED,
+            CONTEXT_OVERALL
+        };
+        typedef QMap<QString, ContextMenuContext> ContextMap;
         typedef QMap<QListWidgetItem*, AssetMetaData> AssetMap;
+
+        // Constructor/destructor
         MediaListWidget (QWidget* parent = 0);
         virtual ~MediaListWidget (void);
 
@@ -65,6 +75,13 @@ class MediaListWidget : public QListWidget
         */
         virtual void removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
 
+        /** Add an item to the contextmenu. The menu item is only visible if it meets the criteria of the context.
+         * E.g. if an actionText is passed with the CONTEXT_MEDIA_ITEMS_SELECTED, then this menu item is only
+         * visible when MediaWidgets are selected.
+         * If the item is selected, the contextMenuItemSelected event is emitted.
+        */
+        void addContextMenuItem (const QString& actionText, ContextMenuContext context);
+
     signals:
         // Emitted when an asset is added
         void resourceAdded (AssetMetaData* assetMetaData);
@@ -73,10 +90,12 @@ class MediaListWidget : public QListWidget
         void resourceDeleted (AssetMetaData* assetMetaData);
 
     protected:
-        void deleteItem(QListWidgetItem* item);
-
-    private:
         AssetMap mAssetMap;
+        QMenu* mContextMenu;
+        ContextMap mContextMap;
+
+        void deleteItem(QListWidgetItem* item);
+        void buildContextmenu (void);
 };
 
 #endif

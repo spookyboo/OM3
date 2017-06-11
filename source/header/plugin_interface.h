@@ -60,10 +60,23 @@ struct _OM3Export AssetMetaData
     tm dateTimeAssetCreation;                                   // Timestamp when the asset was created; this is always GMT
     tm dateTimeModified;                                        // Latest timestamp when the asset was modified; this is always GMT
     long byteSize;                                              // Size of the asset in bytes
+    bool isReadOnly = false;                                    // When this value is true, the asset cannot be modified (e.g. Youtube video's).
 
-    // Locking properties
-    tm dateTimeAssetLock;                                       // Timestamp indicating when the asset has been locked; this is always GMT
-    std::string lockedByUser;                                   // Identification of the user that currently locks the resource
+    /* Specific MediaWidget properties that determine actions of that widget in the application
+     *
+     */
+    struct MediaWidgetAction                                    // The MediaWidgetAction is typically set by a MediaWidget. It contains information
+                                                                // associated to that MediaWidget to perform a certain action, when asked.
+    {
+        std::string actionText;                                 // Identifies the action. E.g. when a menu is used, this attribute can be used to show the MediaWidget's action
+    };
+    std::vector <MediaWidgetAction> mediaWidgetActionVec;       // One asset may contain multiple MediaWidgetAction objects
+
+
+
+    // Locking properties????
+    //tm dateTimeAssetLock;                                       // Timestamp indicating when the asset has been locked; this is always GMT
+    //std::string lockedByUser;                                   // Identification of the user that currently locks the asset
 
     // Properties, specific to the type of asset
     // TODO:
@@ -78,18 +91,8 @@ struct _OM3Export AssetMetaData
     // TODO: E.g. Licenses, tags, description,
     // TODO: Add a derivedCategory; this is determined based on extension and/or other properties. A user can put the asset in another category,
     // but this is what OM3 determines itself
-    std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
-    std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
-
-
-    // Specific MediaWidget properties that determine behaviour of that widget in the application
-    //
-    struct MediaWidgetBehaviour                                 // The MediaWidgetBehaviour is typically set by a MediaWidget. It contains information
-                                                                // associated to that MediaWidget
-    {
-        std::string menuText;                                   // If a menu is used, this attribute can be used to show the MediaWidget's capacity
-    };
-    std::vector <MediaWidgetBehaviour> mediaWidgetBehaviourVec; // One asset may contain multiple MediaWidgetCapacity objects
+    //std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
+    //std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
 };
 
 /****************************************************************************

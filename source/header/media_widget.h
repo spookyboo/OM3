@@ -42,10 +42,13 @@ class MediaWidget : public QWidget
         }
         virtual ~MediaWidget (void) {}
 
-        /**
-          Returns the information of this media widget
+        /** Returns the information of this media widget
           */
         const AssetMetaData& getAssetMetaData (void) const {return mAssetMetaData;}
+
+        /** Returns the information of this media widget
+          */
+        virtual void delegateActionByText (const std::string& actionText) = 0;
 
     protected:
         AssetMetaData mAssetMetaData;

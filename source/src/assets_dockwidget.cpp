@@ -36,6 +36,8 @@ AssetsDockWidget::AssetsDockWidget (QString title, MainWindow* parent, Qt::Windo
     mTabWidget = new QTabWidget(mInnerMain);
     mInnerMain->setCentralWidget(mTabWidget);
     setWindowTitle(QString(""));
+
+    // TODO: Read the global properties config file
 }
 
 //****************************************************************************/
@@ -106,9 +108,17 @@ void AssetsDockWidget::addResourceToWorkbench (const AssetMetaData& assetMetaDat
 }
 
 //****************************************************************************/
+const QVariant& AssetsDockWidget::getGlobalConfigPropertyValue (const QString& propertyName)
+{
+    // TODO
+    return QVariant();
+}
+
+//****************************************************************************/
 void AssetsDockWidget::tabSelected (int index)
 {
     // Replace the code in this function with your own code.
     //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
     //QMessageBox::information(this, QString("QTabWidget"), message);
 }
+
