@@ -80,16 +80,27 @@ struct _OM3Export AssetMetaData
     // but this is what OM3 determines itself
     std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
     std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
+
+
+    // Specific MediaWidget properties that determine behaviour of that widget in the application
+    //
+    struct MediaWidgetBehaviour                                 // The MediaWidgetBehaviour is typically set by a MediaWidget. It contains information
+                                                                // associated to that MediaWidget
+    {
+        std::string menuText;                                   // If a menu is used, this attribute can be used to show the MediaWidget's capacity
+    };
+    std::vector <MediaWidgetBehaviour> mediaWidgetBehaviourVec; // One asset may contain multiple MediaWidgetCapacity objects
 };
 
 /****************************************************************************
  Defines the interface of a plugin.
  ***************************************************************************/
+class AssetsDockWidget;
 class _OM3Export PluginInterface
 {
     public:
-        PluginInterface() {}
-        virtual ~PluginInterface() {}
+        PluginInterface (void){}
+        virtual ~PluginInterface (void) {}
 
         /** Get the type of the plugin.
         @remarks OM3 is capable of loading libraries with different plugin types
@@ -147,6 +158,16 @@ class _OM3Export PluginInterface
          the plugin should arrange its widgets to the default state.
          */
         virtual void resetWindowLayout (void) = 0;
-    };
+
+        /** Creation of the plugin always needs a pointer to the AssetsDockWidget.
+         * The AssetsDockWidget is the object of communication between plugins and
+         * the OM3 application.
+         */
+        void setAssetsDockWidget (AssetsDockWidget* assetsDockWidget) {mAssetsDockWidget = assetsDockWidget;}
+        AssetsDockWidget* getAssetsDockWidget (void) {return mAssetsDockWidget;}
+
+    protected:
+        AssetsDockWidget* mAssetsDockWidget;
+};
 
 #endif

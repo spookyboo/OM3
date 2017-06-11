@@ -52,17 +52,24 @@ class _OM3Export AssetsDockWidget : public QDockWidget
         /** Add a new tab to the AssetsDockWidget and set the widget, created by the resource
          * provider, in the tab. This widget can be any kind of QWidget. OM3 does not enforce how
          * a resource provider is implemented. It only expects a widget that can be displayed in the
-         * tab
+         * tab.
+         * * This function is typically called by  a resource provider plugin.
          */
         void addResourceProviderWidget (QWidget* widget,
                                         QString fullQualifiedIconName,
                                         QString tabName);
 
-        /** Returns an instance of a MediaWidget, based on the (file) extension of the asset/resource.
-         * A specific MediaWidget plugin is used to actually create the MediaWidget
+        /** Creates and returns an instance of a MediaWidget, based on the (file) extension of the
+         * asset/resource. Specific MediaWidget plugins are used to actually create MediaWidgets.
          * This MediaListWidget is not managed by the AssetsDockWidget.
          */
-        MediaWidget* createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent = 0);
+        MediaWidget* createMediaWidget (AssetMetaData* assetMetaData, QWidget* parent = 0);
+
+        /** A resource managed by a resource provider plugin can be added to the OM3 workbench,
+         * making it a local resource. A copy of the resource is made and used within the workbench.
+         * This function is typically called by  a resource provider plugin.
+         */
+        void addResourceToWorkbench (const AssetMetaData& assetMetaData);
 
     private slots:
         void tabSelected (int index);

@@ -39,6 +39,7 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
     setFlow(QListView::LeftToRight);
     setResizeMode(QListView::Adjust);
     setDragEnabled(false);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 //****************************************************************************/

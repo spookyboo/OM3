@@ -23,8 +23,8 @@
 #include <QSettings>
 #include "constants.h"
 #include "mainwindow.h"
-#include "plugin_resource_provider_interface.h"      // Only needed to force creation of 'plugin_resource_interface.obj', otherwise the plugins get a linking error
-#include "plugin_media_widget_interface.h"  // Only needed to force creation of 'plugin_media_widget_interface.obj', otherwise the plugins get a linking error
+#include "plugin_resource_provider_interface.h"     // Only needed to force creation of 'plugin_resource_interface.obj', otherwise the plugins get a linking error
+#include "plugin_media_widget_interface.h"          // Only needed to force creation of 'plugin_media_widget_interface.obj', otherwise the plugins get a linking error
 
 typedef PluginInterface* (*PLUGIN_CREATE)(AssetsDockWidget* assetsDockWidget);
 typedef void (*PLUGIN_DELETE)(void);

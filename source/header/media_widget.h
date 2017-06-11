@@ -23,15 +23,22 @@
 #include "plugin_interface.h"
 
 /****************************************************************************
-A Media widgets is used to show a media file as a widget (e.g. in the workbench
+A Media widgets is used to show a media file as a widget (e.g. in the workbench)
+MediaWidget is supposed to be subclassed in a plugin that implements the
+PluginMediaWidgetInterface.
+The MediaWidget class as such does not contain any functionality to make it
+extendable when used in a plugin.
 ***************************************************************************/
 class MediaWidget : public QWidget
 {
     public:
-        MediaWidget (const AssetMetaData& assetMetaData, QWidget* parent) :
+        MediaWidget (AssetMetaData* assetMetaData, QWidget* parent) :
             QWidget(parent)
         {
-            mAssetMetaData = assetMetaData;
+            /* The pointer to the assetMetaData is volatile; the MediaWidget will keep its
+             * own copy (also to enrich it with its own data), using a copy constructor.
+             */
+            mAssetMetaData = AssetMetaData(*assetMetaData);
         }
         virtual ~MediaWidget (void) {}
 

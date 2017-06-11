@@ -36,7 +36,8 @@ QT_END_NAMESPACE
 class MainWindow;
 
 /****************************************************************************
- This class represents a DockWidget
+ This class represents a DockWidget, containing the category tree. Assets/
+ resources in the Workbench can be rearranged by adding them to a category.
  ***************************************************************************/
 class _OM3Export CategoriesDockWidget : public QDockWidget
 {

@@ -61,20 +61,11 @@ void AssetsDockWidget::addResourceProviderWidget (QWidget* widget,
     mResourcesAdded = true;
 }
 
-
 //****************************************************************************/
-void AssetsDockWidget::tabSelected (int index)
-{
-    // Replace the code in this function with your own code.
-    //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
-    //QMessageBox::information(this, QString("QTabWidget"), message);
-}
-
-//****************************************************************************/
-MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMetaData, QWidget* parent)
+MediaWidget* AssetsDockWidget::createMediaWidget (AssetMetaData* assetMetaData, QWidget* parent)
 {
     // The plugins are registered in mParent
-    PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData.extension);
+    PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData->extension);
     if (plugin)
     {
         // The plugin is found, so it creates the appropriate widget
@@ -103,4 +94,21 @@ MediaWidget* AssetsDockWidget::createMediaWidget (const AssetMetaData& assetMeta
             }
         }
     }
+}
+
+/****************************************************************************/
+void AssetsDockWidget::addResourceToWorkbench (const AssetMetaData& assetMetaData)
+{
+    // Todo:
+    // - Copy the resource from fullQualifiedFileNameImport to fullQualifiedFileNameLocal
+    // - Add it to the workbench
+    QMessageBox::information(0, "addResourceToWorkbench", "Done");
+}
+
+//****************************************************************************/
+void AssetsDockWidget::tabSelected (int index)
+{
+    // Replace the code in this function with your own code.
+    //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
+    //QMessageBox::information(this, QString("QTabWidget"), message);
 }

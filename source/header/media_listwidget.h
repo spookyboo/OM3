@@ -24,8 +24,15 @@
 #include "plugin_interface.h"
 
 /****************************************************************************
-Main class that contains Media widgets. It is typically used to show a list
-of media files. It is used to show which media files are part of the workbench
+Main class that displays a list of media files, represented by means of
+MediaWidgets. It is used in OM3's workbench and in the
+OM3ResourceProviderFilePlugin.
+
+Note, that the MediaListWidget is used as a convenient widget to display
+MediaWidgets. It is not mandatory to use the MediaListWidget class in a
+resource provider plugin that wants to display MediaWidgets. MediaWidgets
+can also be displayed in a custom widget. It is up to the resource provider
+plugin developer how to implement this.
 ***************************************************************************/
 class QListWidgetItem;
 class MediaWidget;
@@ -38,32 +45,32 @@ class MediaListWidget : public QListWidget
 
         /** Add a Media Widget to this list.
          */
-        void addMediaWidget (MediaWidget* mediaWidget);
+        virtual void addMediaWidget (MediaWidget* mediaWidget);
 
         /** Remove a specific MediaWidget, identified by assetId
          */
-        void removeMediaWidgetByAssetId (double assetId);
+        virtual void removeMediaWidgetByAssetId (double assetId);
 
         /** Remove one or more MediaWidgets, identified by topLevelPath
          */
-        void removeMediaWidgetsByTopLevelPath (const QString& topLevelPath);
+        virtual void removeMediaWidgetsByTopLevelPath (const QString& topLevelPath);
 
         /** Remove one or more MediaWidgets, identified by path
          */
-        void removeMediaWidgetsByPath (const QString& path);
+        virtual void removeMediaWidgetsByPath (const QString& path);
 
         /** Remove one or more MediaWidget, identified by origin and the toplevel path
         @remarks The difference between the previous function is that multiple plugins
         may have the same path, so more MediaWidget are unintendedly removed
         */
-        void removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
+        virtual void removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
 
     signals:
         // Emitted when an asset is added
-        void resourceAdded (const AssetMetaData& assetMetaData);
+        void resourceAdded (AssetMetaData* assetMetaData);
 
         // Emitted when an asset is deleted
-        void resourceDeleted (const AssetMetaData& assetMetaData);
+        void resourceDeleted (AssetMetaData* assetMetaData);
 
     protected:
         void deleteItem(QListWidgetItem* item);
