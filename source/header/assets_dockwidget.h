@@ -65,11 +65,11 @@ class _OM3Export AssetsDockWidget : public QDockWidget
          */
         MediaWidget* createMediaWidget (AssetMetaData* assetMetaData, QWidget* parent = 0);
 
-        /** A resource managed by a resource provider plugin can be added to the OM3 workbench,
-         * making it a local resource. A copy of the resource is made and used within the workbench.
+        /** A resource managed by a resource provider plugin can be added to the OM3 workspace,
+         * making it a local resource. A copy of the resource is made and used within the workspace.
          * This function is typically called by  a resource provider plugin.
          */
-        void addResourceToWorkbench (const AssetMetaData& assetMetaData);
+        void addResourceToWorkspace (const AssetMetaData& assetMetaData);
 
         /** Returns the value of a global property. These properties are stored in a configuration
          * file and can be retrieved when needed

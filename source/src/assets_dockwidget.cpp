@@ -19,6 +19,7 @@
 // Include
 #include "constants.h"
 #include "mainwindow.h"
+#include "workspace_widget.h"
 #include "Assets_dockwidget.h"
 #include "plugin_media_widget_interface.h"
 
@@ -67,7 +68,7 @@ void AssetsDockWidget::addResourceProviderWidget (QWidget* widget,
 MediaWidget* AssetsDockWidget::createMediaWidget (AssetMetaData* assetMetaData, QWidget* parent)
 {
     // The plugins are registered in mParent
-    PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData->extension);
+    PluginMediaWidgetInterface* plugin = mParent->findPluginMediaWidgetByExtension (assetMetaData->extensionOrMimeType);
     if (plugin)
     {
         // The plugin is found, so it creates the appropriate widget
@@ -99,12 +100,16 @@ MediaWidget* AssetsDockWidget::createMediaWidget (AssetMetaData* assetMetaData, 
 }
 
 /****************************************************************************/
-void AssetsDockWidget::addResourceToWorkbench (const AssetMetaData& assetMetaData)
+void AssetsDockWidget::addResourceToWorkspace (const AssetMetaData& assetMetaData)
 {
     // Todo:
     // - Copy the resource from fullQualifiedFileNameImport to fullQualifiedFileNameLocal
-    // - Add it to the workbench
-    QMessageBox::information(0, "addResourceToWorkbench", "Done");
+
+
+    // Add the widget to the workspace
+    AssetMetaData metaData(assetMetaData);
+    MediaWidget* widget = createMediaWidget(&metaData);
+    mParent->getWorkspaceWidget()->addMediaWidget(widget);
 }
 
 //****************************************************************************/

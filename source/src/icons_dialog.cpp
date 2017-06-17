@@ -46,7 +46,7 @@ IconsDialog::IconsDialog(QWidget* parent) :
 
     // Fill the texture widget
     addTextureFile (ICON_PATH + ICON_FOLDER); // TEST
-    addTextureFile (ICON_PATH + ICON_WORKBENCH); // TEST
+    addTextureFile (ICON_PATH + ICON_WORKSPACE); // TEST
     addTextureFile (ICON_PATH + ICON_CATEGORY_DEFAULT); // TEST
     addTextureFile (ICON_PATH + ICON_ASSET_DEFAULT); // TEST
 

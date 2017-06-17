@@ -32,7 +32,8 @@ static const std::string PLUGIN_TYPE_RESOURCE = "plugin_resource_type";
 static const std::string PLUGIN_TYPE_MEDIA_WIDGET = "plugin_media_widget_type";
 
 /****************************************************************************
- Structure of the meta data used by the plugins
+ Structure of the meta data used by the plugins. This stucture only uses C++
+ datatypes.
  ***************************************************************************/
 struct _OM3Export AssetMetaData
 {
@@ -41,36 +42,42 @@ struct _OM3Export AssetMetaData
      * TODO: Define which properties are mandatory; these are the properties used in OM3 itself.
      *
      */
-    std::string origin;                                         // Identification of the resource plugin
-    double assetId;                                             // Identification of the asset; e.g. a database key
-    std::string topLevelPath;                                   // Contains the top level path
-    std::string path;                                           // Contains the path of the asset
-    std::string baseNameOrReference;                            // Contains the (file) name of the asset
-    std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename); this is the original location
-    std::string fullQualifiedFileNameImport;                    // Refers to a file location of the asset (path+filename) after it was imported by the resource provider.
+    std::string origin;                                         // Identification of the resource plugin.
+    double assetId;                                             // Identification of the asset; e.g. a database key.
+    std::string topLevelPath;                                   // Contains the top level path.
+    std::string path;                                           // Contains the path of the asset.
+    std::string baseNameOrReference;                            // Contains the (file) name of the asset.
+    std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename); this is the original location (of the resource provider).
+    std::string fullQualifiedFileNamePulled;                    // Refers to a file location of a copy of the asset (path+filename) after it was pulled from the resource provider.
                                                                 // An asset could be stored in a database, but when it is used by the OM3 application it must be in a
-                                                                // file format. This file is managed by the resource provider.
-    std::string fullQualifiedFileNameLocal;                     // Refers to a file location of the asset (path+filename) when locked by the user. The file is managed by the
-                                                                // OM3 appliction itself.
-    std::string extension;                                      // The extension is used to define the media type of the asset and to derive the media widget plugin
-                                                                // is involved with creation of a media widget. Note, that the extension is without leading dot.
-                                                                // Even if the baseNameOrReference does not have an extension, it must still be provided, otherwise a
+                                                                // file format.
+    std::string extensionOrMimeType;                            // The extensionOrMimeType is used to define the media type of the asset and to derive the media widget plugin
+                                                                // involved with creation of a media widget. Note, that in case of an extension, it is without leading dot.
+                                                                // Even if the baseNameOrReference does not have an extension, extensionOrMimeType must still be provided, otherwise a
                                                                 // default media widget is used in the application.
                                                                 // Examples: "jpg", " fbx", "mesh", "mp3", ...
-    tm dateTimeAssetCreation;                                   // Timestamp when the asset was created; this is always GMT
-    tm dateTimeModified;                                        // Latest timestamp when the asset was modified; this is always GMT
-    long byteSize;                                              // Size of the asset in bytes
+    tm dateTimeAssetCreation;                                   // Timestamp when the asset was created; this is always GMT.
+    tm dateTimeModified;                                        // Latest timestamp when the asset was modified; this is always GMT.
+    long byteSize;                                              // Size of the asset in bytes.
     bool isReadOnly = false;                                    // When this value is true, the asset cannot be modified (e.g. Youtube video's).
 
-    /* Specific MediaWidget properties that determine actions of that widget in the application
+    typedef std::vector <std::string> TagHierarchy;
+    typedef std::vector <TagHierarchy> Tags;
+    Tags tags;                                                  // A vector with vectors of tags, used to filter or search widgets. An asset may contain [0..n] vectors. Each sub vector
+                                                                // represents [1..m] tags. If there are more tags in one vector, it is considered a 'tag tree'; this is a hierarchy of
+                                                                // tags. Example: Consider a category structure with main category 'cars' and subcategories 'mercedes' and 'volkswagen'.
+                                                                // An image of a volkswagen beetle has [cars, volkswagen] as a vector of tags. If tag 'cars' would be removed, the other
+                                                                // tags in the hierarchy must also be removed.
+
+    /* Specific MediaWidget properties that determine actions of that widget in the application.
      *
      */
     struct MediaWidgetAction                                    // The MediaWidgetAction is typically set by a MediaWidget. It contains information
                                                                 // associated to that MediaWidget to perform a certain action, when asked.
     {
-        std::string actionText;                                 // Identifies the action. E.g. when a menu is used, this attribute can be used to show the MediaWidget's action
+        std::string actionText;                                 // Identifies the action. E.g. when a menu is used, this attribute can be used to show the MediaWidget's action.
     };
-    std::vector <MediaWidgetAction> mediaWidgetActionVec;       // One asset may contain multiple MediaWidgetAction objects
+    std::vector <MediaWidgetAction> mediaWidgetActionVec;       // One asset may contain multiple MediaWidgetAction objects.
 
 
 
@@ -91,7 +98,6 @@ struct _OM3Export AssetMetaData
     // TODO: E.g. Licenses, tags, description,
     // TODO: Add a derivedCategory; this is determined based on extension and/or other properties. A user can put the asset in another category,
     // but this is what OM3 determines itself
-    //std::vector <std::string> tags;                             // An asset may contain [0..n] tags; used for searching
     //std::map <std::string, std::string> additionalProperties;   // Key/value pairs with custom properties
 };
 

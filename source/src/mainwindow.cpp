@@ -23,6 +23,7 @@
 #include <QSettings>
 #include "constants.h"
 #include "mainwindow.h"
+#include "workspace_widget.h"
 #include "plugin_resource_provider_interface.h"     // Only needed to force creation of 'plugin_resource_interface.obj', otherwise the plugins get a linking error
 #include "plugin_media_widget_interface.h"          // Only needed to force creation of 'plugin_media_widget_interface.obj', otherwise the plugins get a linking error
 
@@ -39,11 +40,14 @@ MainWindow::MainWindow (void) : mIsClosing(false)
     createStatusBar();
     createDockWindows();
 
-    // Add the workbench;  OM3 iself is the 'resource provider' and adds an instance of MediaListWidget to the tab
-    mAssetsDockWidget->addResourceProviderWidget (new MediaListWidget(), ICON_PATH + ICON_WORKBENCH, "Workbench");
+    // Add the workspace;  OM3 iself is the 'resource provider' and adds an instance of WorkspaceWidget to the tab
+    mWorkspaceWidget = new WorkspaceWidget();
+    mWorkspaceWidget->addContextMenuItem(CONTEXT_MENU_ACTION_DELETE_FROM_WORKSPACE, WorkspaceWidget::CONTEXT_MEDIA_ITEMS_SELECTED);
+    mWorkspaceWidget->addContextMenuItem(CONTEXT_MENU_ACTION_CATEGORIZE, WorkspaceWidget::CONTEXT_MEDIA_ITEMS_SELECTED);
+    mAssetsDockWidget->addResourceProviderWidget (mWorkspaceWidget, ICON_PATH + ICON_WORKSPACE, "Workspace");
+    connect(mWorkspaceWidget, SIGNAL(contextMenuItemSelected(QAction*)), this, SLOT(handleContextMenuItemSelected(QAction*)));
 
     // Load the plugins and add them to the mPluginVector
-    // TODO: Plugins need to be loaded from a plugin.cfg file
     mDynLibManager = new DynLibManager();
     QSettings settings(OM3_PLUGINS_CONFIG, QSettings::IniFormat);
 
@@ -236,4 +240,86 @@ PluginMediaWidgetInterface* MainWindow::findPluginMediaWidgetByExtension (const 
     }
 
     return plugin;
+}
+
+//****************************************************************************/
+void MainWindow::handleContextMenuItemSelected(QAction* action)
+{
+    QList<QListWidgetItem*> list = mWorkspaceWidget->selectedItems();
+    MediaWidget* widget;
+    QListWidgetItem* item;
+    if (action->text() == CONTEXT_MENU_ACTION_DELETE_FROM_WORKSPACE)
+    {
+        /* It was a menu item added by the MainWindow, so handle it
+         */
+        if (!list.empty())
+        {
+            foreach (item, list)
+            {
+                widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
+                mWorkspaceWidget->deleteItem(item);
+            }
+        }
+    }
+    else if (action->text() == CONTEXT_MENU_ACTION_CATEGORIZE)
+    {
+        if (!list.empty())
+        {
+            // Get the category vector from the CategoriesDockWidget
+            QVector<QString> categories = mCategoriesDockWidget->getCategoryHierarchy ();
+            if (!categories.empty())
+            {
+                // Run through each selected mediawidget and add the tags
+                foreach (item, list)
+                {
+                    {
+                        widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
+
+                        // Add the elements from the vector to each selected MediaWidget, as tags
+                        widget->addTagHierarchy(categories);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        /* It was not a menu item added by the CentralDockWidget, so it is probably a menu item associated
+         * with a MediaWidget; delegate it
+         */
+        if (!list.empty())
+        {
+            foreach (item, list)
+            {
+                widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
+                widget->delegateActionByText (action->text());
+            }
+        }
+    }
+}
+
+//****************************************************************************/
+void MainWindow::filterOnTag (const QString& tag)
+{
+    QList<QListWidgetItem*> list = mWorkspaceWidget->findItems(QString("*"), Qt::MatchWildcard);
+    MediaWidget* widget;
+    QListWidgetItem* item;
+    foreach (item, list)
+    {
+        widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
+        widget->filterOnTag(tag);
+    }
+}
+
+//****************************************************************************/
+void MainWindow::resetFilter (void)
+{
+    QList<QListWidgetItem*> list = mWorkspaceWidget->findItems(QString("*"), Qt::MatchWildcard);
+    MediaWidget* widget;
+    QListWidgetItem* item;
+    foreach (item, list)
+    {
+        widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
+        widget->resetFilter();
+    }
 }

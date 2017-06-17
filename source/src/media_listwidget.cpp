@@ -38,8 +38,11 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
     setMovement(QListView::Snap);
     setFlow(QListView::LeftToRight);
     setResizeMode(QListView::Adjust);
-    setDragEnabled(false);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setDragEnabled(false);
+    setDragDropMode(QAbstractItemView::DropOnly); // test
+    setDropIndicatorShown(true); // TEST
+    //setDragDropOverwriteMode(true); // test
 
     // Create context menu
     mContextMenu = new QMenu(this);
@@ -124,6 +127,13 @@ void MediaListWidget::addContextMenuItem (const QString& actionText, MediaListWi
 {
     //mContextMenu->addAction(new QAction(actionText));
     mContextMap[actionText] = context;
+}
+
+//****************************************************************************/
+void MediaListWidget::filterOnTags (const QVector<QString>& tags)
+{
+    // TODO
+    // - Make the MediaWidgets that comply to the tag vector visible. If they not comply, make them invisible
 }
 
 //****************************************************************************/

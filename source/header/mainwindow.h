@@ -37,6 +37,7 @@ QT_END_NAMESPACE
  MainWindow is the main container window
  ***************************************************************************/
 class PluginMediaWidgetInterface;
+class WorkspaceWidget;
 class _OM3Export MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -62,13 +63,26 @@ class _OM3Export MainWindow : public QMainWindow
          */
         PluginMediaWidgetInterface* findPluginMediaWidgetByExtension (const std::string& extension);
 
+        /** Get the instance of the WorkspaceWidget
+         */
+        WorkspaceWidget* getWorkspaceWidget (void) {return mWorkspaceWidget;}
+
+        /** Make all MediaWidgets on the workspace invisible if they do not comply to the tag.
+         * Make them visible if they do comply.
+         */
+        void filterOnTag (const QString& tag);
+
+        /** Make the all MediaWidgets visible
+         */
+        void resetFilter (void);
+
 	private slots:
         void doNewMenuAction(void);
         void doOpenMenuAction(void);
         void doSaveMenuAction(void);
         void doQuitMenuAction(void);
         void doResetWindowLayoutMenuAction(void);
-
+        void handleContextMenuItemSelected(QAction* action);
 
 	private:
 		void createActions(void);
@@ -92,6 +106,7 @@ class _OM3Export MainWindow : public QMainWindow
         PluginVector mPluginVector;
         unsigned int mNumberOfLibraries;
         MediaWidgetExtensionMap mMediaWidgetExtensionMap;
+        WorkspaceWidget* mWorkspaceWidget;
 };
 
 #endif

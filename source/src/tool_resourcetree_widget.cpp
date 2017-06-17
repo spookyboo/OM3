@@ -133,6 +133,7 @@ QtResourceTreeWidget::QtResourceTreeWidget(const QString& iconDir, QWidget* pare
 //****************************************************************************/
 QtResourceTreeWidget::~QtResourceTreeWidget(void)
 {
+    mContextMenu->clear();
     clearRegisteredResources();
     clearResourceInfoVec();
 }
@@ -435,10 +436,11 @@ bool QtResourceTreeWidget::isContextMenuEnabled(void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setCreateTopLevelGroupContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setCreateTopLevelGroupContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mCreateTopLevelGroupContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -473,10 +475,11 @@ bool QtResourceTreeWidget::isDeleteTopLevelGroupEnabled (void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setCreateSubGroupContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setCreateSubGroupContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mCreateSubGroupContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -499,10 +502,11 @@ bool QtResourceTreeWidget::isSubLevelGroupItemEditable(void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setCreateAssetContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setCreateAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mCreateAssetContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -512,10 +516,11 @@ bool QtResourceTreeWidget::isCreateAssetContextMenuItemEnabled(void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setImportAssetContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setImportAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mImportAssetContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -525,10 +530,11 @@ bool QtResourceTreeWidget::isImportAssetContextMenuItemEnabled(void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setDuplicateAssetContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setDuplicateAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mDuplicateAssetContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -538,17 +544,19 @@ bool QtResourceTreeWidget::isDuplicateAssetContextMenuItemEnabled(void)
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setDeleteResourceContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setDeleteResourceContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mDeleteResourceContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::setCollapseExpandContextMenuItemEnabled(bool enabled)
+void QtResourceTreeWidget::setCollapseExpandContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu)
 {
     mCollapseExpandContextMenuItemEnabled = enabled;
-    buildContextMenu();
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
 
 //****************************************************************************/
@@ -602,10 +610,44 @@ void QtResourceTreeWidget::buildContextMenu(void)
 
     // Custom menu items
     QString menuItemText;
-    if (mCustomContextMenuList.size() != 0)
-        foreach (menuItemText, mCustomContextMenuList)
+    if (mCustomContextMenuItemList.size() != 0)
+        foreach (menuItemText, mCustomContextMenuItemList)
             if (!menuItemText.isEmpty())
                 mContextMenu->addAction(new QAction(menuItemText, mResourceTree));
+
+    // Custom subgroups
+    QString subMenuText;
+    QAction* action;
+    if (mCustomContextSubMenuList.size() != 0)
+    {
+        foreach (subMenuText, mCustomContextSubMenuList)
+        {
+            if (!subMenuText.isEmpty())
+            {
+                // Create a submenu
+                QMenu* subMenu = mContextMenu->addMenu(subMenuText);
+                connect(subMenu, SIGNAL(triggered(QAction*)), this, SLOT(contextMenuItemSelected(QAction*)));
+
+                // Add items to subgroups
+                QActionGroup actionGroupZoom (subMenu);
+                actionGroupZoom.setExclusive(true);
+                QMap<QString, QString>::iterator it = mCustomContextSubMenuItemMultiMap.begin();
+                QMap<QString, QString>::iterator itEnd = mCustomContextSubMenuItemMultiMap.end();
+                while (it != itEnd)
+                {
+                    if (subMenuText == it.key())
+                    {
+                        action = new QAction(it.value());
+                        action->setCheckable(true);
+                        actionGroupZoom.addAction(action);
+                    }
+                    ++it;
+                }
+
+                subMenu->addActions(actionGroupZoom.actions());
+            }
+        }
+    }
 
     // Menu item for creating a toplevel
     if (mCreateTopLevelGroupContextMenuItemEnabled)
@@ -1501,14 +1543,43 @@ void QtResourceTreeWidget::contextMenuItemSelected(QAction* action)
     else
     {
         // Check whether a custom item is selected
-        QString menuItem;
+        QString menuItemText;
         int resourceId = 0;
         QTreeWidgetItem* item = mResourceTree->currentItem();
         resourceId = getResourceIdFromItem(item);
-        foreach (menuItem, mCustomContextMenuList)
+
+        // Iterate trough menu items
+        foreach (menuItemText, mCustomContextMenuItemList)
         {
-            if (action->text() == menuItem)
-                emit customContextMenuItemSelected(menuItem, resourceId);
+            if (action->text() == menuItemText)
+            {
+                emit customContextMenuItemSelected(menuItemText, resourceId);
+                return;
+            }
+        }
+
+        // Iterate trough submenu items
+        QString subMenuItemText;
+        QMultiMap<QString, QString>::iterator it = mCustomContextSubMenuItemMultiMap.begin();
+        QMultiMap<QString, QString>::iterator itEnd = mCustomContextSubMenuItemMultiMap.end();
+        while (it != itEnd)
+        {
+            subMenuItemText = it.value();
+            if (action->text() == subMenuItemText)
+            {
+                // First set all submenu items on unchecked
+                QList<QMenu*> subMenus = mContextMenu->findChildren<QMenu*>();
+                foreach (QMenu* subMenu, subMenus)
+                {
+                    foreach (QAction* subMenuItem, subMenu->actions())
+                        subMenuItem->setChecked(false);
+                }
+
+                // Set the specific action on checked and emit
+                action->setChecked(true);
+                emit customContextMenuItemSelected(subMenuItemText, resourceId);
+            }
+            ++it;
         }
     }
 }
@@ -1649,11 +1720,29 @@ void QtResourceTreeWidget::handleItemChanged (QTreeWidgetItem * item, int column
 }
 
 //****************************************************************************/
-void QtResourceTreeWidget::addCustomContextMenuItem (const QString& menuItemText)
+void QtResourceTreeWidget::addCustomContextMenuItem (const QString& menuItemText, bool forceBuildContextMenu)
 {
-    mCustomContextMenuList.append(menuItemText);
-    buildContextMenu();
+    mCustomContextMenuItemList.append(menuItemText);
+    if (forceBuildContextMenu)
+        buildContextMenu();
 }
+
+//****************************************************************************/
+void QtResourceTreeWidget::addCustomContextSubMenu (const QString& subMenuText, bool forceBuildContextMenu)
+{
+    mCustomContextSubMenuList.append(subMenuText);
+    if (forceBuildContextMenu)
+        buildContextMenu();
+}
+
+//****************************************************************************/
+void QtResourceTreeWidget::addCustomContextSubMenuItem (const QString& subMenuText, const QString& subMenuItemText, bool forceBuildContextMenu)
+{
+    mCustomContextSubMenuItemMultiMap.insert (subMenuText, subMenuItemText);
+    if (forceBuildContextMenu)
+        buildContextMenu();
+}
+
 
 //****************************************************************************/
 void QtResourceTreeWidget::clearSelection (void)

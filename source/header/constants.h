@@ -25,13 +25,21 @@
 static const QString ICON_PATH = QString("../common/icons/");
 static const QString ICON_CATEGORY_DEFAULT = QString("category_default.png");
 static const QString ICON_FOLDER = QString("folder.png");
-static const QString ICON_WORKBENCH = QString("workbench.png");
+static const QString ICON_WORKSPACE = QString("workspace.png");
 static const QString ICON_ASSET_DEFAULT = QString("asset_default.png");
 
-//************************************ Contextmenu actions *******************************************/
+//************************************ Contextmenu actions Category widget *******************************************/
 static const QString CONTEXT_MENU_ACTION_ADD_CATEGORY = QString("Add category");
 static const QString CONTEXT_MENU_ACTION_REMOVE_CATEGORY = QString("Remove category");
 static const QString CONTEXT_MENU_ACTION_SET_ICON = QString("Set icon");
+static const QString CONTEXT_MENU_ACTION_FILTER_ON_OFF = QString("Filter on category");
+static const QString CONTEXT_MENU_ACTION_FILTER_ON = QString("On");
+static const QString CONTEXT_MENU_ACTION_FILTER_OFF = QString("Off");
+
+
+//************************************ Contextmenu actions Workspace *******************************************/
+static const QString CONTEXT_MENU_ACTION_DELETE_FROM_WORKSPACE = QString("Delete selected asset(s) from the workspace");
+static const QString CONTEXT_MENU_ACTION_CATEGORIZE = QString("Assign selected asset(s) to the current category");
 
 //************************************ Misc *******************************************/
 static const QString OM3_PLUGINS_CONFIG = QString("plugins.cfg");

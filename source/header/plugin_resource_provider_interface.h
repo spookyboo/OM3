@@ -36,6 +36,25 @@ class _OM3Export PluginResourceProviderInterface : public PluginInterface
         /** @see PluginInterface
         */
         virtual const std::string& getType (void) const {return PLUGIN_TYPE_RESOURCE;}
+
+        /** Pull is a generic way to retrieve a resource from the resource provider.
+         * The resource provider 'knows'  its resource and the way resources are extracted.
+         * The result of a 'pull' is a copy of the resource on the filesystem. The
+         * location of the file is updated in the assetMetaData (fullQualifiedFileNamePulled).
+         * @param assetMetaData
+         * @return bool, indicating wether the pull was succesful.
+        */
+        virtual bool pull (AssetMetaData* assetMetaData) = 0;
+
+        /** Push is a generic way to store a resource to a location determined by the resource
+         * provider on the location defined by fullQualifiedFileNameOrReference. The resource
+         * provider also checks whether the originals resource was already updated.
+         * The result of a succesful 'push' is that the original resource is replaced by the new
+         * version.
+         * @param assetMetaData
+         * @return bool, indicating wether the push was succesful.
+        */
+        virtual bool push (AssetMetaData* assetMetaData) = 0;
 };
 
 #endif

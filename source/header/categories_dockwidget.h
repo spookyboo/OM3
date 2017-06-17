@@ -37,7 +37,7 @@ class MainWindow;
 
 /****************************************************************************
  This class represents a DockWidget, containing the category tree. Assets/
- resources in the Workbench can be rearranged by adding them to a category.
+ resources in the Workspace can be rearranged by adding them to a category.
  ***************************************************************************/
 class _OM3Export CategoriesDockWidget : public QDockWidget
 {
@@ -47,12 +47,24 @@ class _OM3Export CategoriesDockWidget : public QDockWidget
 		CategoriesDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
 		~CategoriesDockWidget(void);
 
+        /** Returns the current catagory. Because the category can be part of a hierarchy, the whole
+         * tree is returned.
+         */
+        QVector<QString> getCategoryHierarchy (void);
+
+        /** Determines wether filtering must be set on or off
+         */
+        const bool isFilterAssets (void) const {return mFilterAssets;}
+
     private slots:
-        void handleCustomContextMenuItemSelected(const QString& menuItemText, int resourceId);
+        void handleCustomContextMenuItemSelected (const QString& menuItemText, int resourceId);
+        void handleCategorySelected (int resourceId);
 
 	private:
 		MainWindow* mParent;
         QtResourceTreeWidget* mResourceTreeWidget;
+        QVector<QString> mCategoryTree;
+        bool mFilterAssets;
 };
 
 #endif

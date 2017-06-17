@@ -120,7 +120,7 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         bool isContextMenuEnabled(void);
 
         // If true, the context menu is extended with an option to create a toplevel group
-        void setCreateTopLevelGroupContextMenuItemEnabled(bool enabled);
+        void setCreateTopLevelGroupContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isCreateTopLevelGroupContextMenuItemEnabled(void);
 
         // If true, the toplevel items can be editted (false is the default)
@@ -132,7 +132,7 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         bool isDeleteTopLevelGroupEnabled (void);
 
         // If true, the context menu is extended with an option to create a subgroup
-        void setCreateSubGroupContextMenuItemEnabled(bool enabled);
+        void setCreateSubGroupContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isCreateSubGroupContextMenuItemEnabled(void);
 
         // If true, the sublevel items can be editted (false is the default)
@@ -144,27 +144,27 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         bool isInheritSubGroupIconFromParent(void);
 
         // If true, the context menu is extended with an option to create an asset
-        void setCreateAssetContextMenuItemEnabled(bool enabled);
+        void setCreateAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isCreateAssetContextMenuItemEnabled(void);
 
         // If true, the context menu is extended with an option to import an asset
         // Importing is not actually working, but it emits a signal. The application that
         // uses this widget can react on this signal.
-        void setImportAssetContextMenuItemEnabled(bool enabled);
+        void setImportAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isImportAssetContextMenuItemEnabled(void);
 
         // If true, the context menu is extended with an option to duplicate an asset
         // Duplicating only creates another item in the resourcetree and emits a signal. The application that
         // uses this widget can react on this signal.
-        void setDuplicateAssetContextMenuItemEnabled(bool enabled);
+        void setDuplicateAssetContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isDuplicateAssetContextMenuItemEnabled(void);
 
         // If true, the context menu is extended with an option to delete a resource
-        void setDeleteResourceContextMenuItemEnabled(bool enabled);
+        void setDeleteResourceContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isDeleteResourceContextMenuItemEnabled(void);
 
         // If true, the context menu is extended with an option to collapse and expand the resource tree
-        void setCollapseExpandContextMenuItemEnabled(bool enabled);
+        void setCollapseExpandContextMenuItemEnabled(bool enabled, bool forceBuildContextMenu=true);
         bool isCollapseExpandContextMenuItemEnabled(void);
 
         // If true, the asset items can be editted (false is the default)
@@ -374,7 +374,15 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         // Adds an extra entry to the context menu (displayed by means of 'menuItemText')
         // If the item is selected from the context menu, the signal 'customContextMenuItemSelected'
         // is emitted.
-        void addCustomContextMenuItem(const QString& menuItemText);
+        void addCustomContextMenuItem (const QString& menuItemText, bool forceBuildContextMenu=true);
+
+        // Adds an extra submenu to the context menu (displayed by means of 'subMenuText')
+        void addCustomContextSubMenu (const QString& subMenuText, bool forceBuildContextMenu=true);
+
+        // Adds an extra entry to the context submenu (identified by 'subMenuText')
+        // If the item is selected from the context submenu, the signal 'customContextMenuItemSelected'
+        // is emitted.
+        void addCustomContextSubMenuItem (const QString& subMenuText, const QString& subMenuItemText, bool forceBuildContextMenu=true);
 
         // Get/Set mAddAssetAfterDuplicateAssetSelected
         // This is used to determine whether an item must be duplicated or if only the signal is emitted
@@ -453,10 +461,11 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         // resourceId is the currently selected item in the resource tree
         void customContextMenuItemSelected (const QString& menuItemText, int resourceId);
 
+
     protected:
+        void buildContextMenu(void);
         QtResourceInfo* getRegisteredResourceInfo (int resourceId);
         int getDepth(int resourceId); // Depth in the tree
-        void buildContextMenu(void);
         void enableContextMenuItemsForSelectedResource(void);
         void enableContextMenuItem(const QString& menuItemText, bool enabled);
         QAction* getContextMenuAction(const QString& menuItemText);
@@ -496,8 +505,10 @@ class _OM3Export QtResourceTreeWidget : public QWidget
         QMap<QString, bool> mSubGroupContextMenuItemEnabled;
         QMap<QString, bool> mAssetContextMenuItemEnabled;
         QString mTempString;
-        QStringList mCustomContextMenuList;
+        QStringList mCustomContextMenuItemList;
         QMenu* mContextMenu;
+        QStringList mCustomContextSubMenuList; // List with submenus
+        QMultiMap<QString, QString> mCustomContextSubMenuItemMultiMap; // Map with items of subgroups
         QMenu* mToplevelGroupSubMenu;
         QMenu* mSubGroupSubMenu;
         QHBoxLayout* mSearchLayout;

@@ -26,7 +26,7 @@
 
 /****************************************************************************
 Main class that displays a list of media files, represented by means of
-MediaWidgets. It is used in OM3's workbench and in the
+MediaWidgets. It is used in OM3's workspace and in the
 OM3ResourceProviderFilePlugin.
 
 Note, that the MediaListWidget is used as a convenient widget to display
@@ -75,12 +75,20 @@ class MediaListWidget : public QListWidget
         */
         virtual void removeMediaWidgetsByOriginAndTopLevelPath (const QString& origin, const QString& topLevelPath);
 
+        /** Delete one item, including the associated widget from the MediaListWidget
+        */
+        virtual void deleteItem(QListWidgetItem* item);
+
         /** Add an item to the contextmenu. The menu item is only visible if it meets the criteria of the context.
          * E.g. if an actionText is passed with the CONTEXT_MEDIA_ITEMS_SELECTED, then this menu item is only
          * visible when MediaWidgets are selected.
          * If the item is selected, the contextMenuItemSelected event is emitted.
         */
-        void addContextMenuItem (const QString& actionText, ContextMenuContext context);
+        virtual void addContextMenuItem (const QString& actionText, ContextMenuContext context);
+
+        /** Filter the mediawidgets on a list of 1 or more tags
+        */
+        virtual void filterOnTags (const QVector<QString>& tags);
 
     signals:
         // Emitted when an asset is added
@@ -94,7 +102,6 @@ class MediaListWidget : public QListWidget
         QMenu* mContextMenu;
         ContextMap mContextMap;
 
-        void deleteItem(QListWidgetItem* item);
         void buildContextmenu (void);
 };
 

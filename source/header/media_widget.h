@@ -23,7 +23,7 @@
 #include "plugin_interface.h"
 
 /****************************************************************************
-A Media widgets is used to show a media file as a widget (e.g. in the workbench)
+A Media widgets is used to show a media file as a widget (e.g. in the workspace)
 MediaWidget is supposed to be subclassed in a plugin that implements the
 PluginMediaWidgetInterface.
 The MediaWidget class as such does not contain any functionality to make it
@@ -32,23 +32,50 @@ extendable when used in a plugin.
 class MediaWidget : public QWidget
 {
     public:
-        MediaWidget (AssetMetaData* assetMetaData, QWidget* parent) :
-            QWidget(parent)
-        {
-            /* The pointer to the assetMetaData is volatile; the MediaWidget will keep its
-             * own copy (also to enrich it with its own data), using a copy constructor.
-             */
-            mAssetMetaData = AssetMetaData(*assetMetaData);
-        }
-        virtual ~MediaWidget (void) {}
+        MediaWidget (AssetMetaData* assetMetaData, QWidget* parent);
+        virtual ~MediaWidget (void);
+
+        /** Add a tag to this MediaWidget; tags are used for filtering
+         * Duplicates are ignored
+         */
+        virtual void addTag (const QString& tag);
+
+        /** When a tag is part of a hierarchy with one or more parent tags, the
+         * whole tree must be added. This keeps the hierarchy structure of the tags,
+         * so when one of the tags in the tree is deleted, the whole tree must be deleted.
+          */
+        virtual void addTagHierarchy (const QVector<QString>& tagHierarchy);
+
+        /** Delete a tag from this MediaWidget. If the tag is part of a tree, the
+         * whole tree is deleted.
+         * Ignored, if the tag is not found.
+         */
+        virtual void deleteTag (const QString& tag);
+
+        /** Make the MediaWidget invisible if it does not comply to the tag.
+         * Make it visible if it does comply.
+         * @return bool, indicating that the widget is visible or not
+         */
+        virtual bool filterOnTag (const QString& tag);
+
+        /** Make the MediaWidget invisible if it does not comply to the vector with tags.
+         * Make it visible if it does comply.
+         * @remark The tags do not have to be part of one tree.
+         * @return bool, indicating that the widget is visible or not
+         */
+        virtual bool filterOnTags (const QVector<QString>& tags);
+
+        /** Make the MediaWidget visible
+         */
+        virtual void resetFilter (void);
 
         /** Returns the information of this media widget
-          */
+         */
         const AssetMetaData& getAssetMetaData (void) const {return mAssetMetaData;}
 
         /** Returns the information of this media widget
-          */
-        virtual void delegateActionByText (const std::string& actionText) = 0;
+         */
+        virtual void delegateActionByText (const QString& actionText) = 0;
 
     protected:
         AssetMetaData mAssetMetaData;

@@ -26,16 +26,20 @@
 //****************************************************************************/
 CategoriesDockWidget::CategoriesDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags) : 
 	QDockWidget (title, parent, flags), 
-	mParent(parent)
+    mParent(parent),
+    mFilterAssets(false)
 {
     mResourceTreeWidget = new QtResourceTreeWidget (ICON_PATH);
     mResourceTreeWidget->generateUniqueResourceId(); // Start with 0
 
     // Custom actions
-    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_ADD_CATEGORY);
-    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_REMOVE_CATEGORY);
-    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_SET_ICON);
-    mResourceTreeWidget->setDeleteResourceContextMenuItemEnabled(false);
+    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_ADD_CATEGORY, false);
+    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_REMOVE_CATEGORY, false);
+    mResourceTreeWidget->addCustomContextMenuItem(CONTEXT_MENU_ACTION_SET_ICON, false);
+    mResourceTreeWidget->addCustomContextSubMenu(CONTEXT_MENU_ACTION_FILTER_ON_OFF, false);
+    mResourceTreeWidget->addCustomContextSubMenuItem(CONTEXT_MENU_ACTION_FILTER_ON_OFF, CONTEXT_MENU_ACTION_FILTER_OFF, false);
+    mResourceTreeWidget->addCustomContextSubMenuItem(CONTEXT_MENU_ACTION_FILTER_ON_OFF, CONTEXT_MENU_ACTION_FILTER_ON, false); // Add it reverse because of using a multimap
+    mResourceTreeWidget->setDeleteResourceContextMenuItemEnabled(false, true); // Rebuild the contextmenu
 
     // Toplevel group settings
     mResourceTreeWidget->setCreateTopLevelGroupContextMenuItemEnabled(false);
@@ -54,6 +58,7 @@ CategoriesDockWidget::CategoriesDockWidget(QString title, MainWindow* parent, Qt
 
     // Handlers
     connect(mResourceTreeWidget, SIGNAL(customContextMenuItemSelected(QString, int)), this, SLOT(handleCustomContextMenuItemSelected(QString, int)));
+    connect(mResourceTreeWidget, SIGNAL(resourceSelected(int)), this, SLOT(handleCategorySelected(int)));
 
     // Perform standard functions
     setWidget(mResourceTreeWidget);
@@ -65,7 +70,22 @@ CategoriesDockWidget::~CategoriesDockWidget(void)
 }
 
 //****************************************************************************/
-void CategoriesDockWidget::handleCustomContextMenuItemSelected(const QString& menuItemText, int resourceId)
+QVector<QString> CategoriesDockWidget::getCategoryHierarchy (void)
+{
+    // Build the tree based on the selected resource
+    mCategoryTree.clear();
+    int resourceId = mResourceTreeWidget->getSelectedResource();
+    while (resourceId != 0)
+    {
+        mCategoryTree.push_back(mResourceTreeWidget->getResourceName(resourceId));
+        resourceId = mResourceTreeWidget->getParentId(resourceId);
+    }
+
+    return mCategoryTree;
+}
+
+//****************************************************************************/
+void CategoriesDockWidget::handleCustomContextMenuItemSelected (const QString& menuItemText, int resourceId)
 {
     if (menuItemText == CONTEXT_MENU_ACTION_ADD_CATEGORY)
     {
@@ -112,4 +132,24 @@ void CategoriesDockWidget::handleCustomContextMenuItemSelected(const QString& me
             mResourceTreeWidget->setIcon(resourceId, iconsDialog.getSelectedIconBasename());
         }
     }
+    else if (menuItemText == CONTEXT_MENU_ACTION_FILTER_ON)
+    {
+        mFilterAssets = true;
+        int resourceId = mResourceTreeWidget->getSelectedResource();
+        QString categoryName = mResourceTreeWidget->getResourceName(resourceId);
+        mParent->filterOnTag(categoryName);
+    }
+    else if (menuItemText == CONTEXT_MENU_ACTION_FILTER_OFF)
+    {
+        mFilterAssets = false;
+        mParent->resetFilter ();
+    }
+}
+
+//****************************************************************************/
+void CategoriesDockWidget::handleCategorySelected (int resourceId)
+{
+    QString categoryName = mResourceTreeWidget->getResourceName(resourceId);
+    if (mFilterAssets)
+        mParent->filterOnTag(categoryName);
 }

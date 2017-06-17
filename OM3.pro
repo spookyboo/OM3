@@ -20,7 +20,8 @@ HEADERS       = \
     source/header/core.h \
     source/header/treewidget.h \
     source/header/media_widget.h \
-    source/header/plugin_resource_provider_interface.h
+    source/header/plugin_resource_provider_interface.h \
+    source/header/workspace_widget.h
 
 SOURCES       = \
     source/src/main.cpp \
@@ -34,7 +35,9 @@ SOURCES       = \
     source/src/dynlib_manager.cpp \
     source/src/media_listwidget.cpp \
     source/src/tool_default_texturewidget.cpp \
-    source/src/treewidget.cpp
+    source/src/treewidget.cpp \
+    source/src/media_widget.cpp \
+    source/src/workspace_widget.cpp
 
 INCLUDEPATH += "../OM3/source/header/"
 
