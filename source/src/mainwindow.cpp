@@ -307,7 +307,8 @@ void MainWindow::filterOnTag (const QString& tag)
     foreach (item, list)
     {
         widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
-        widget->filterOnTag(tag);
+        bool visible = widget->filterOnTag(tag);
+        item->setHidden(!visible); // Must be set to visible/invivsible otherwise empty places are shown
     }
 }
 
@@ -321,5 +322,6 @@ void MainWindow::resetFilter (void)
     {
         widget = static_cast<MediaWidget*>(mWorkspaceWidget->itemWidget(item));
         widget->resetFilter();
+        item->setHidden(false);
     }
 }

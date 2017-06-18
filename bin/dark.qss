@@ -820,7 +820,7 @@ QToolTip
 	padding: 0px;
 	border-radius: 0px;
 	opacity: 150;
-	color: #000000;
+	color: #ffffff;
 }
 
 QDoubleSpinBox 

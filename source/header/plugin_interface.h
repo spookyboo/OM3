@@ -48,9 +48,11 @@ struct _OM3Export AssetMetaData
     std::string path;                                           // Contains the path of the asset.
     std::string baseNameOrReference;                            // Contains the (file) name of the asset.
     std::string fullQualifiedFileNameOrReference;               // Refers to a location of the asset (e.g. path+filename); this is the original location (of the resource provider).
+    std::string fullQualifiedFileNameCopied;                    // Refers to a location of the asset (e.g. path+filename); this is a copy of the asset, only used by OM3 (MediaWidget) for
+                                                                // display purposes. An asset could be stored in a database, but when it is used by the OM3 application it must be in a
+                                                                // file format. Therefor a copy is made.
     std::string fullQualifiedFileNamePulled;                    // Refers to a file location of a copy of the asset (path+filename) after it was pulled from the resource provider.
-                                                                // An asset could be stored in a database, but when it is used by the OM3 application it must be in a
-                                                                // file format.
+                                                                // A pulled asset is used for editting (not a fullQualifiedFileNameCopied, which is only used for disply purposes).
     std::string extensionOrMimeType;                            // The extensionOrMimeType is used to define the media type of the asset and to derive the media widget plugin
                                                                 // involved with creation of a media widget. Note, that in case of an extension, it is without leading dot.
                                                                 // Even if the baseNameOrReference does not have an extension, extensionOrMimeType must still be provided, otherwise a
