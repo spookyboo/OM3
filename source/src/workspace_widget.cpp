@@ -17,13 +17,24 @@
 ****************************************************************************/
 
 // Include
+#include <QMessageBox>
 #include <QMouseEvent>
+#include <QMimeData>
 #include "workspace_widget.h"
+#include "assets_dockwidget.h"
 
 //****************************************************************************/
-WorkspaceWidget::WorkspaceWidget (QWidget* parent) :
-    MediaListWidget (parent)
+WorkspaceWidget::WorkspaceWidget (AssetsDockWidget* assetsDockWidget, QWidget* parent) :
+    MediaListWidget (parent),
+    mAssetsDockWidget (assetsDockWidget)
 {
+    // Define the (supported or unsupported) mimetypes of html pages
+    mMimeType = "";
+    mMimeTypeMap["youtube.com"] = "video/x-youtube";
+    mMimeTypeMap["vimeo.com"] = "video/x-vimeo";
+
+    setAcceptDrops(true);
+    setDropIndicatorShown(true);
     connect(mContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(handleContextMenuItemSelected(QAction*)));
 }
 
@@ -33,7 +44,7 @@ WorkspaceWidget::~WorkspaceWidget (void)
 }
 
 //****************************************************************************/
-void WorkspaceWidget::mousePressEvent( QMouseEvent* e )
+void WorkspaceWidget::mousePressEvent (QMouseEvent* e)
 {
     if (e->button() == Qt::RightButton)
     {
@@ -47,7 +58,73 @@ void WorkspaceWidget::mousePressEvent( QMouseEvent* e )
 }
 
 //****************************************************************************/
-void WorkspaceWidget::handleContextMenuItemSelected(QAction* action)
+void WorkspaceWidget::handleContextMenuItemSelected (QAction* action)
 {
     emit contextMenuItemSelected (action);
+}
+
+//****************************************************************************/
+void WorkspaceWidget::dragEnterEvent (QDragEnterEvent * event)
+{
+    event->acceptProposedAction();
+}
+
+//****************************************************************************/
+void WorkspaceWidget::dragMoveEvent (QDragMoveEvent* event)
+{
+    event->acceptProposedAction();
+}
+
+//****************************************************************************/
+void WorkspaceWidget::dropEvent (QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+    if (mimeData->hasHtml())
+    {
+        // It contains HTML, so it must be a webpage
+        if (mimeData->hasText())
+        {
+            // Add it to the workbench
+            AssetMetaData assetMetaData;
+            assetMetaData.origin = "OM3";
+            assetMetaData.assetId = 0; // For now it has no meaning
+            assetMetaData.topLevelPath = "";
+            assetMetaData.path = "";
+            assetMetaData.baseNameOrReference = mimeData->text().toStdString();
+            assetMetaData.fullQualifiedFileNameOrReference = mimeData->text().toStdString();
+            assetMetaData.fullQualifiedFileNameCopied = assetMetaData.fullQualifiedFileNameOrReference;
+            assetMetaData.fullQualifiedFileNamePulled = "";
+            assetMetaData.extensionOrMimeType = determineMimeType(mimeData).toStdString();
+            //time_t rawTime = info.created().toTime_t();
+            //assetMetaData.dateTimeAssetCreation = *gmtime(&rawTime);
+            //rawTime = info.lastModified().toTime_t();
+            //assetMetaData.dateTimeModified = *gmtime(&rawTime);
+            //assetMetaData.byteSize = info.size();
+            MediaWidget* mediaWidget = mAssetsDockWidget->createMediaWidget(&assetMetaData);
+            addMediaWidget(mediaWidget);
+        }
+    }
+    else if (mimeData->hasText())
+    {
+        // It must be something else
+        // TODO: Implement file drop
+    }
+
+    event->acceptProposedAction();
+}
+
+//****************************************************************************/
+const QString& WorkspaceWidget::determineMimeType (const QMimeData* mimeData)
+{
+    mMimeType = "text/html";
+    QMap<QString, QString>::const_iterator it = mMimeTypeMap.begin();
+    QMap<QString, QString>::const_iterator itEnd = mMimeTypeMap.end();
+    while (it != itEnd)
+    {
+        if (mimeData->text().contains(it.key()))
+            mMimeType = it.value();
+
+        ++it;
+    }
+    return mMimeType;
 }

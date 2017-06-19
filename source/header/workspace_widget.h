@@ -25,16 +25,24 @@
 Sub class of MediaListWidget. Added to prevent nasty linking errors with
 signal/slots if they were implemented in MediaListWidget itself.
 ***************************************************************************/
+class AssetsDockWidget;
 class WorkspaceWidget : public MediaListWidget
 {
     Q_OBJECT
 
     public:
-        WorkspaceWidget (QWidget* parent = 0);
+        WorkspaceWidget (AssetsDockWidget* assetsDockWidget, QWidget* parent = 0);
         virtual ~WorkspaceWidget (void);
 
+        /** Determine the (custom) mimetype, based on QMimeData
+        */
+        const QString& determineMimeType (const QMimeData* mimeData);
+
     protected:
-        virtual void mousePressEvent( QMouseEvent* e );
+        virtual void mousePressEvent (QMouseEvent* e );
+        virtual void dragEnterEvent (QDragEnterEvent * event); // MUST be implemented to make drop event working
+        virtual void dragMoveEvent (QDragMoveEvent* event); // MUST be implemented to make drop event working
+        virtual void dropEvent (QDropEvent *event); // MUST be implemented to make drop event working
 
     protected slots:
         void handleContextMenuItemSelected(QAction* action);
@@ -43,6 +51,11 @@ class WorkspaceWidget : public MediaListWidget
         /** Emitted when an menu item from the contextmenu is selected
         */
         void contextMenuItemSelected (QAction* action);
+
+    private:
+        AssetsDockWidget* mAssetsDockWidget;
+        QString mMimeType;
+        QMap<QString, QString> mMimeTypeMap;
 };
 
 #endif

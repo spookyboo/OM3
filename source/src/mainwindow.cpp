@@ -41,7 +41,7 @@ MainWindow::MainWindow (void) : mIsClosing(false)
     createDockWindows();
 
     // Add the workspace;  OM3 iself is the 'resource provider' and adds an instance of WorkspaceWidget to the tab
-    mWorkspaceWidget = new WorkspaceWidget();
+    mWorkspaceWidget = new WorkspaceWidget(mAssetsDockWidget);
     mWorkspaceWidget->addContextMenuItem(CONTEXT_MENU_ACTION_DELETE_FROM_WORKSPACE, WorkspaceWidget::CONTEXT_MEDIA_ITEMS_SELECTED);
     mWorkspaceWidget->addContextMenuItem(CONTEXT_MENU_ACTION_CATEGORIZE, WorkspaceWidget::CONTEXT_MEDIA_ITEMS_SELECTED);
     mAssetsDockWidget->addResourceProviderWidget (mWorkspaceWidget, ICON_PATH + ICON_WORKSPACE, "Workspace");

@@ -40,9 +40,6 @@ MediaListWidget::MediaListWidget (QWidget* parent) :
     setResizeMode(QListView::Adjust);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(false);
-    setDragDropMode(QAbstractItemView::DropOnly); // test
-    setDropIndicatorShown(true); // TEST
-    //setDragDropOverwriteMode(true); // test
 
     // Create context menu
     mContextMenu = new QMenu(this);

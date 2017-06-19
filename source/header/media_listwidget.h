@@ -102,6 +102,7 @@ class MediaListWidget : public QListWidget
         QMenu* mContextMenu;
         ContextMap mContextMap;
 
+        // Protected functions
         void buildContextmenu (void);
 };
 

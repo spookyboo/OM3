@@ -102,10 +102,6 @@ MediaWidget* AssetsDockWidget::createMediaWidget (AssetMetaData* assetMetaData, 
 /****************************************************************************/
 void AssetsDockWidget::addResourceToWorkspace (const AssetMetaData& assetMetaData)
 {
-    // Todo:
-    // - Copy the resource from fullQualifiedFileNameImport to fullQualifiedFileNameLocal
-
-
     // Add the widget to the workspace
     AssetMetaData metaData(assetMetaData);
     MediaWidget* widget = createMediaWidget(&metaData);
